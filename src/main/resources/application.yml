@@ -1,0 +1,81 @@
+springdoc:
+  api-docs:
+    path: /api/doc
+  packages-to-scan: tw.edu.ntub.imd.justforyou.controller
+  default-produces-media-type: application/json;charset=UTF-8
+debug: true
+spring:
+  application:
+    name: justforyou
+  main:
+    banner-mode: off
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  profiles:
+    active: local
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 250MB
+  security:
+    jwt:
+      secret: fewfkpok0923kowcl2p3ldkvp;ldkc[welp[23o0-cdvkflv,re
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${just-for-you.mail.account}
+    password: ${just-for-you.mail.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: ${just-for-you.database.url}
+    username: ${just-for-you.database.account}
+    password: ${just-for-you.database.password}
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: true
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: ${spring.jpa.database-platform}
+        hbm2ddl:
+          auto: ${spring.jpa.hibernate.ddl-auto}
+        show_sql: ${spring.jpa.show-sql}
+        format_sql: ${spring.jpa.show-sql}
+  freemarker:
+    template-loader-path: classpath:/templates/
+    prefer-file-system-access: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+server:
+  port: 8080
+  delegate-port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+  image:
+    url: 'http://${server.ip}:${server.delegate-port}${server.servlet.context-path}${server.image.name}'
+  file:
+    url: 'http://${server.ip}:${server.delegate-port}${server.servlet.context-path}${server.file.name}'
+logging:
+  config: classpath:log4j2.yml
+  level:
+    jdbc:
+      sqlonly: off
+      audit: off
+      resultset: off
+      connection: off

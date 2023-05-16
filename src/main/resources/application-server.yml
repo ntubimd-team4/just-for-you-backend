@@ -1,0 +1,15 @@
+server:
+  ip: 127.0.0.1
+  image:
+    name: image
+    path: 'C:\just-for-you\UploadFile\${server.image.name}\'
+  file:
+    name: file
+    path: 'C:\just-for-you\UploadFile\${server.file.name}\'
+logging:
+  level:
+    sqltiming: DEBUG
+    resultsettable: DEBUG
+spring:
+  thymeleaf:
+    prefix: classpath:/static/
