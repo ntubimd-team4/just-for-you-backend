@@ -1,0 +1,2 @@
+rootProject.name = 'just-for-you'
+include 'modules:just-for-you-config', 'modules:just-for-you-database-config'

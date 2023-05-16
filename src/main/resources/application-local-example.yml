@@ -1,0 +1,21 @@
+server:
+  ip: 你的IP
+  delegate-port: 8080
+  image:
+    name: image
+    path: '存放路徑 Ex: D:\just-for-you\UploadFile\${server.image.name}\'
+  file:
+    name: file
+    path: '存放路徑 Ex: D:\just-for-you\UploadFile\${server.file.name}\'
+logging:
+  level:
+    sqltiming: DEBUG
+    resultsettable: DEBUG
+spring:
+  thymeleaf:
+    prefix: classpath:../../../build/resources/main/static/
+just-for-you:
+  database:
+    url: jdbc:log4jdbc:mysql://{資料庫IP}:{port}/{資料庫名字}?serverTimezone=Asia/Taipei
+    account: 帳號
+    password: 密碼
