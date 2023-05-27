@@ -18,7 +18,7 @@ import java.util.Map;
 @EnableTransactionManagement
 @EntityScan(basePackages = "tw.edu.ntub.imd.justforyou.databaseconfig.entity")
 public class Config {
-    public static final String DATABASE_NAME = "just-for-you";
+    public static final String DATABASE_NAME = "112-just_for_you";
 
     @Bean
     public TransactionInterceptor transactionInterceptor(TransactionManager transactionManager) {
