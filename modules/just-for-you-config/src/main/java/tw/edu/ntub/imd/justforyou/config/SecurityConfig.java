@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -25,6 +26,8 @@ import tw.edu.ntub.imd.justforyou.config.handler.CustomLogoutSuccessHandler;
 import tw.edu.ntub.imd.justforyou.config.handler.CustomerAccessDeniedHandler;
 import tw.edu.ntub.imd.justforyou.config.properties.FileProperties;
 import tw.edu.ntub.imd.justforyou.config.properties.ImageProperties;
+import tw.edu.ntub.imd.justforyou.config.provider.CustomAuthenticationProvider;
+
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +37,7 @@ import java.util.Collections;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final String imageUrlName;
     private final String fileUrlName;
+    private final UserDetailsService userDetailsService;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -41,17 +45,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityConfig(
             FileProperties fileProperties,
             ImageProperties imageProperties,
+            UserDetailsService userDetailsService,
             CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
             JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.fileUrlName = fileProperties.getName();
         this.imageUrlName = imageProperties.getName();
+        this.userDetailsService = userDetailsService;
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.authenticationProvider(new CustomAuthenticationProvider(userService));
+        auth.authenticationProvider(new CustomAuthenticationProvider(userDetailsService));
     }
 
     @Bean
@@ -99,37 +105,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new CustomLoginFilter(authenticationManager(), customAuthenticationSuccessHandler), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests() // 設定Requests的權限需求
-                .antMatchers(HttpMethod.GET, "/**").permitAll()
-                .anyRequest().authenticated()
+//                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .formLogin() // 設定Login，如果是用Form表單登入的話
                 .loginPage("/login") // 設定Login頁面的URL
                 .loginProcessingUrl("/login") // 設定Login動作的URL
                 .failureUrl("/login?error") // 設定Login失敗的URL
                 .permitAll() // Login不需要權限
-                .usernameParameter("account")
-                .passwordParameter("password")
                 .and()
                 .logout() // 設定Logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // 設定Logout URL
                 .logoutSuccessHandler(new CustomLogoutSuccessHandler())
-                .logoutSuccessUrl("/login") // 設定登出成功後的URL
                 .deleteCookies("JSESSIONID")
                 .and()
                 .sessionManagement() // Session管理
                 .sessionFixation() // Session固定ID保護
                 .migrateSession() // 每次登入，都會產生新的，並將舊的屬性複製，預設值
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .invalidSessionUrl("/") // Session過期時的URL導向
-                .maximumSessions(1) // 設定Session數只能一個
-                .expiredUrl("/") // 設定因為再次登入而導致的URL過期的URL導向
         ;
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList());
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setExposedHeaders(Collections.singletonList("X-Auth-Token"));

@@ -19,8 +19,6 @@ import java.io.IOException;
 public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     public CustomLoginFilter(AuthenticationManager authenticationManager, AuthenticationSuccessHandler authenticationSuccessHandler) {
-        setUsernameParameter("userid");
-        setPasswordParameter("userPwd");
         setAuthenticationManager(authenticationManager);
         setAuthenticationSuccessHandler(authenticationSuccessHandler);
         setAuthenticationFailureHandler(new CustomAuthenticationFailHandler());
@@ -28,15 +26,9 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        if (request.getMethod().equalsIgnoreCase("POST")) {
-            UsernamePasswordAuthenticationToken authentication;
-            if (request.getContentType().startsWith("application/json")) {
-                authentication = resolveAuthenticationFromRequestBody(request);
-            } else {
-                String account = obtainUsername(request);
-                String password = obtainPassword(request);
-                authentication = new UsernamePasswordAuthenticationToken(account, password);
-            }
+        if (request.getMethod().equalsIgnoreCase("POST") && request.getHeader("X-Client-Token") != null) {
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    request.getHeader("X-Client-Token"), null);
             setDetails(request, authentication);
             return getAuthenticationManager().authenticate(authentication);
         } else {
