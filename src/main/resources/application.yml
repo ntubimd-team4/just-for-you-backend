@@ -19,7 +19,7 @@ spring:
       max-request-size: 250MB
   security:
     jwt:
-      secret: fewfkpok0923kowcl2p3ldkvp;ldkc[welp[23o0-cdvkflv,re
+      secret: 7k4g42o3i; 284vlu4v,m65j4xu3vu4wj/3$3e kl324i@;df5r
   mail:
     host: smtp.gmail.com
     port: 587
@@ -71,6 +71,9 @@ server:
     url: 'http://${server.ip}:${server.delegate-port}${server.servlet.context-path}${server.image.name}'
   file:
     url: 'http://${server.ip}:${server.delegate-port}${server.servlet.context-path}${server.file.name}'
+google:
+  clientId: 997648490140-idm0f2icqlf8pcu98gaeqbb2a36jl9nb.apps.googleusercontent.com
+  clientSecret: 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
 logging:
   config: classpath:log4j2.yml
   level:
