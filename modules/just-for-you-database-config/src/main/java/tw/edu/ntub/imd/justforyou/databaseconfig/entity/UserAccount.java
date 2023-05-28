@@ -50,6 +50,13 @@ public class UserAccount {
     @Column(name = "department", length = 45)
     private String department;
     /**
+     * 頭像
+     *
+     * @since 1.0.0
+     */
+    @Column(name = "picture", length = 200)
+    private String picture;
+    /**
      * google id
      *
      * @since 1.0.0

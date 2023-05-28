@@ -11,6 +11,7 @@ public class UserAccountBean {
     private String userName;
     private Boolean userSex;
     private String department;
+    private String picture;
     private String googleId;
     private Role role;
     private Boolean available;

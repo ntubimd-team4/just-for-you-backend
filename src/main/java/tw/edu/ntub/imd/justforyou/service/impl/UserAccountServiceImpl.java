@@ -18,6 +18,7 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.UserAccount;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Role;
 import tw.edu.ntub.imd.justforyou.service.UserAccountService;
 import tw.edu.ntub.imd.justforyou.service.transformer.UserAccountTransformer;
+import tw.edu.ntub.imd.justforyou.util.EmailTransformUtils;
 
 import java.util.*;
 
@@ -54,15 +55,17 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
                 String email = (String) payload.get("email");
                 Optional<UserAccount> optional = userAccountDAO.findById(email);
 
-
                 UserAccount userAccount;
                 if (optional.isEmpty()) {
                     userAccount = new UserAccount();
                     userAccount.setUserId(email);
                     userAccount.setUserName((String) payload.get("name"));
+                    userAccount.setPicture((String) payload.get("picture"));
                     userAccount.setGoogleId(googleId);
                     userAccount.setAvailable(true);
                     userAccount.setCreateId(email);
+
+                    email = EmailTransformUtils.remove(email);
 
                     if (email.length() == 8 && email.matches("\\d{8}|[nN]\\d{7}|\\d{4}[a-zA-Z]\\d{3}|[nN]\\d{3}[a-zA-Z]\\d{3}")) {
                         userAccount.setRole(Role.STUDENT);

@@ -26,9 +26,11 @@ public class JustForYouBackendApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(JustForYouBackendApplication.class);
     }
+
     public static void main(String[] args) {
         SpringApplication.run(JustForYouBackendApplication.class, args);
     }
+
     @Bean
     public ObjectMapper objectMapper() {
         return ResponseUtils.createMapper();
