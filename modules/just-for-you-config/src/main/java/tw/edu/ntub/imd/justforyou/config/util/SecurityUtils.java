@@ -14,6 +14,10 @@ public final class SecurityUtils {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    public static String getLoginUserRole() {
+        return String.valueOf(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+    }
+
     public static boolean isLogin() {
         return SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
     }

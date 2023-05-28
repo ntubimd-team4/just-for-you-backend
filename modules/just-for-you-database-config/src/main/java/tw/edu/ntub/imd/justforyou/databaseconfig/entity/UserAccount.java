@@ -3,6 +3,7 @@ package tw.edu.ntub.imd.justforyou.databaseconfig.entity;
 import lombok.Data;
 import tw.edu.ntub.imd.justforyou.databaseconfig.Config;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.converter.BooleanTo1And0Converter;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.listener.UserAccountListener;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Role;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
+@EntityListeners(UserAccountListener.class)
 @Table(name = "user_account", schema = Config.DATABASE_NAME)
 public class UserAccount {
     /**

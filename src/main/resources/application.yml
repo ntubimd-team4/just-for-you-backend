@@ -72,8 +72,8 @@ server:
   file:
     url: 'http://${server.ip}:${server.delegate-port}${server.servlet.context-path}${server.file.name}'
 google:
-  clientId: 997648490140-idm0f2icqlf8pcu98gaeqbb2a36jl9nb.apps.googleusercontent.com
-  clientSecret: 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
+  clientId: 997648490140-i0p5nap430lp04q87j4pptgjtkj6pris.apps.googleusercontent.com
+  clientSecret: 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
 logging:
   config: classpath:log4j2.yml
   level:

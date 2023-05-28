@@ -60,7 +60,8 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
                     userAccount.setUserId(email);
                     userAccount.setUserName((String) payload.get("name"));
                     userAccount.setGoogleId(googleId);
-//                    userAccount.setAvailable(true);
+                    userAccount.setAvailable(true);
+                    userAccount.setCreateId(email);
 
                     if (email.length() == 8 && email.matches("\\d{8}|[nN]\\d{7}|\\d{4}[a-zA-Z]\\d{3}|[nN]\\d{3}[a-zA-Z]\\d{3}")) {
                         userAccount.setRole(Role.STUDENT);
