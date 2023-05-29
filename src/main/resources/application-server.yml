@@ -10,6 +10,8 @@ logging:
   level:
     sqltiming: DEBUG
     resultsettable: DEBUG
-spring:
-  thymeleaf:
-    prefix: classpath:/static/
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

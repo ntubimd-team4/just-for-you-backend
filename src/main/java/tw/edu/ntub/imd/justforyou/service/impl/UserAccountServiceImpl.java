@@ -11,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import tw.edu.ntub.birc.common.util.CollectionUtils;
 import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.UserAccountDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.UserAccount;
@@ -120,10 +119,5 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
             e.printStackTrace();
         }
         throw new UsernameNotFoundException("登入失敗");
-    }
-
-    @Override
-    public List<UserAccountBean> searchData() {
-        return CollectionUtils.map(userAccountDAO.findData(),transformer::transferToBean);
     }
 }
