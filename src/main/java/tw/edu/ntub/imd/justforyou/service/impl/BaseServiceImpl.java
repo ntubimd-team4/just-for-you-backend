@@ -2,12 +2,14 @@ package tw.edu.ntub.imd.justforyou.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
 import tw.edu.ntub.birc.common.util.JavaBeanUtils;
+import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.BaseDAO;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.BaseService;
 import tw.edu.ntub.imd.justforyou.service.transformer.BeanEntityTransformer;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class BaseServiceImpl<B, E, ID extends Serializable> extends BaseViewServiceImpl<B, E, ID> implements BaseService<B, ID> {
@@ -36,4 +38,6 @@ public abstract class BaseServiceImpl<B, E, ID extends Serializable> extends Bas
     public void delete(ID id) {
         baseDAO.deleteById(id);
     }
+
+    public abstract List<UserAccountBean> getStudent();
 }
