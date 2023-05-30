@@ -105,8 +105,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new CustomLoginFilter(authenticationManager(), customAuthenticationSuccessHandler), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests() // 設定Requests的權限需求
-//                .anyRequest().authenticated()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
+//                .anyRequest().permitAll()
                 .and()
                 .formLogin() // 設定Login，如果是用Form表單登入的話
                 .loginPage("/login") // 設定Login頁面的URL

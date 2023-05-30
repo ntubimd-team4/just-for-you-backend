@@ -4,7 +4,6 @@ import lombok.Data;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Role;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Data
 public class UserAccountBean {
@@ -20,6 +19,4 @@ public class UserAccountBean {
     private LocalDateTime createTime;
     private String modifyId;
     private LocalDateTime modifyTime;
-
-
 }

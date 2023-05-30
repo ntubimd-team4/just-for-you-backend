@@ -121,16 +121,4 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
         }
         throw new UsernameNotFoundException("登入失敗");
     }
-
-    @Override
-    public List searchData() {
-        return CollectionUtils.map(userAccountDAO.findData(), transformer::transferToBean);
-    }
-
-
-    @Override
-    public List<UserAccountBean> getStudent() {
-        return null;
-    }
-
 }
