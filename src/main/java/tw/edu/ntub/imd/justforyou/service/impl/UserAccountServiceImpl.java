@@ -130,10 +130,10 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
     }
 
     @Override
-    public List<UserAccountBean> searchData(String role, Pager pager) {
-        return CollectionUtils.map(role.equals("0") ?
+    public List<UserAccountBean> searchData(String type, Pager pager) {
+        return CollectionUtils.map(type.equals("0") ?
                 userAccountDAO.findAll(PageRequest.of(pager.getZeroBasedPage(), pager.getCount())).getContent() :
-                userAccountDAO.findAll(specification.checkBlank(role), PageRequest.of(pager.getZeroBasedPage(),
+                userAccountDAO.findAll(specification.checkBlank(type), PageRequest.of(pager.getZeroBasedPage(),
                         pager.getCount())).getContent(), transformer::transferToBean);
     }
 
@@ -147,5 +147,12 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
         } else {
             throw new NotFoundException("查無此筆資料： " + userId);
         }
+    }
+
+    @Override
+    public int getCount(String type, int count) {
+        return type.equals("0") ?
+                userAccountDAO.findAll(PageRequest.of(0, count)).getTotalPages() :
+                userAccountDAO.findAll(specification.checkBlank(type), PageRequest.of(0, count)).getTotalPages();
     }
 }

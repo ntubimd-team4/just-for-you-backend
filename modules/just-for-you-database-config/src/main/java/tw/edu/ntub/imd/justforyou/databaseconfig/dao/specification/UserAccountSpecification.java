@@ -13,11 +13,11 @@ import java.util.List;
 
 @Component
 public class UserAccountSpecification {
-    public Specification<UserAccount> checkBlank(String role) {
+    public Specification<UserAccount> checkBlank(String type) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (StringUtils.isNotBlank(role)) {
-                predicates.add(criteriaBuilder.equal(root.get(UserAccount_.ROLE), Role.of(role)));
+            if (StringUtils.isNotBlank(type)) {
+                predicates.add(criteriaBuilder.equal(root.get(UserAccount_.ROLE), Role.of(type)));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

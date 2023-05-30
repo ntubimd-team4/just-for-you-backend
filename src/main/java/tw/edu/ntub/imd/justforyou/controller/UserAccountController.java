@@ -10,6 +10,7 @@ import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.UserAccountService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
+import tw.edu.ntub.imd.justforyou.util.json.object.SingleValueObjectData;
 
 
 @AllArgsConstructor
@@ -60,6 +61,16 @@ public class UserAccountController {
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
                 .data(objectData)
+                .build();
+    }
+
+    @GetMapping(path = "/count")
+    public ResponseEntity<String> searchTotalCount(@RequestParam(name = "type") String type,
+                                                   @RequestParam(name = "count") int count) {
+        int totalPage = userAccountService.getCount(type, count);
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(SingleValueObjectData.create("totalPage", totalPage))
                 .build();
     }
 

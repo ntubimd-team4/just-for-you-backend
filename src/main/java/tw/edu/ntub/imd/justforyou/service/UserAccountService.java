@@ -11,4 +11,6 @@ public interface UserAccountService extends BaseService<UserAccountBean, String>
     List<UserAccountBean> searchData(String type, Pager pager);
 
     void updateAvailable(String userId);
+
+    int getCount(String type, int count);
 }
