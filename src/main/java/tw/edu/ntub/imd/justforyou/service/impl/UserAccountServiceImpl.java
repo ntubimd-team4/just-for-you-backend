@@ -130,11 +130,31 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
     }
 
     @Override
-    public List<UserAccountBean> searchData(String role, Pager pager) {
-        return CollectionUtils.map(role.equals("0") ?
+    public List<UserAccountBean> searchData(String type, Pager pager) {
+        return CollectionUtils.map(type.equals("0") ?
                 userAccountDAO.findAll(PageRequest.of(pager.getZeroBasedPage(), pager.getCount())).getContent() :
-                userAccountDAO.findAll(specification.checkBlank(role), PageRequest.of(pager.getZeroBasedPage(),
+                userAccountDAO.findAll(specification.checkBlank(type), PageRequest.of(pager.getZeroBasedPage(),
                         pager.getCount())).getContent(), transformer::transferToBean);
+    }
+
+    @Override
+    public List<UserAccountBean> searchKeywordList(String userId, String userName, String department, Pager pager) {
+        return CollectionUtils.map(
+                userAccountDAO.findAll(specification.checkBlank(userId, userName, department), PageRequest.of(pager.getZeroBasedPage(),
+                        pager.getCount())).getContent(), transformer::transferToBean);
+    }
+
+    @Override
+    public int getTotalPage(String type, int count) {
+        return type.equals("0") ?
+                userAccountDAO.findAll(PageRequest.of(0, count)).getTotalPages() :
+                userAccountDAO.findAll(specification.checkBlank(type), PageRequest.of(0, count)).getTotalPages();
+    }
+
+    @Override
+    public int getKeywordListTotalPage(String userId, String userName, String department, int count) {
+        return userAccountDAO.findAll(specification.checkBlank(userId, userName, department),
+                PageRequest.of(0, count)).getTotalPages();
     }
 
     @Override

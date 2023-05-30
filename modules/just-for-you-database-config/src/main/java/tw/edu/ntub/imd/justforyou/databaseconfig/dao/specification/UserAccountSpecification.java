@@ -13,11 +13,27 @@ import java.util.List;
 
 @Component
 public class UserAccountSpecification {
-    public Specification<UserAccount> checkBlank(String role) {
+    public Specification<UserAccount> checkBlank(String type) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (StringUtils.isNotBlank(role)) {
-                predicates.add(criteriaBuilder.equal(root.get(UserAccount_.ROLE), Role.of(role)));
+            if (StringUtils.isNotBlank(type)) {
+                predicates.add(criteriaBuilder.equal(root.get(UserAccount_.ROLE), Role.of(type)));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+    public Specification<UserAccount> checkBlank(String userId, String userName, String department) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (StringUtils.isNotBlank(userId)) {
+                predicates.add(criteriaBuilder.like(root.get(UserAccount_.USER_ID), "%" + userId + "%"));
+            }
+            if (StringUtils.isNotBlank(userName)) {
+                predicates.add(criteriaBuilder.like(root.get(UserAccount_.USER_NAME), "%" + userName + "%"));
+            }
+            if (StringUtils.isNotBlank(department)) {
+                predicates.add(criteriaBuilder.like(root.get(UserAccount_.DEPARTMENT), "%" + department + "%"));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
