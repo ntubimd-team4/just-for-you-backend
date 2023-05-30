@@ -6,6 +6,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,8 +15,11 @@ import org.springframework.stereotype.Service;
 import tw.edu.ntub.birc.common.util.CollectionUtils;
 import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.UserAccountDAO;
+import tw.edu.ntub.imd.justforyou.databaseconfig.dao.specification.UserAccountSpecification;
+import tw.edu.ntub.imd.justforyou.databaseconfig.dto.Pager;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.UserAccount;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Role;
+import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.UserAccountService;
 import tw.edu.ntub.imd.justforyou.service.transformer.UserAccountTransformer;
 import tw.edu.ntub.imd.justforyou.util.EmailTransformUtils;
@@ -28,17 +32,20 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
     private String clientId;
     private final UserAccountDAO userAccountDAO;
     private final UserAccountTransformer transformer;
+    private final UserAccountSpecification specification;
 
-    public UserAccountServiceImpl(UserAccountDAO userAccountDAO, UserAccountTransformer transformer) {
+    public UserAccountServiceImpl(UserAccountDAO userAccountDAO, UserAccountTransformer transformer, UserAccountSpecification specification) {
         super(userAccountDAO, transformer);
         this.userAccountDAO = userAccountDAO;
         this.transformer = transformer;
+        this.specification = specification;
     }
 
     @Override
     public UserAccountBean save(UserAccountBean userAccountBean) {
         return null;
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -121,11 +128,24 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
         }
         throw new UsernameNotFoundException("登入失敗");
     }
-    
+
+    @Override
+    public List<UserAccountBean> searchData(String role, Pager pager) {
+        return CollectionUtils.map(role.equals("0") ?
+                userAccountDAO.findAll(PageRequest.of(pager.getZeroBasedPage(), pager.getCount())).getContent() :
+                userAccountDAO.findAll(specification.checkBlank(role), PageRequest.of(pager.getZeroBasedPage(),
+                        pager.getCount())).getContent(), transformer::transferToBean);
+    }
+
     @Override
     public void updateAvailable(String userId) {
-        UserAccount userAccount = userAccountDAO.findById(userId).get();
-        userAccount.setAvailable(!userAccount.getAvailable());
-        userAccountDAO.update(userAccount);
+        Optional<UserAccount> userAccountOptional = userAccountDAO.findById(userId);
+        if (userAccountOptional.isPresent()) {
+            UserAccount userAccount = userAccountOptional.get();
+            userAccount.setAvailable(!userAccount.getAvailable());
+            userAccountDAO.update(userAccount);
+        } else {
+            throw new NotFoundException("查無此筆資料： " + userId);
+        }
     }
 }
