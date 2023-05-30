@@ -74,6 +74,15 @@ public class UserAccountController {
                 .build();
     }
 
+    @PatchMapping("/profile")
+    public ResponseEntity<String> updateAccountProfile(@RequestBody UserAccountBean userAccountBean) {
+        String id = SecurityUtils.getLoginUserAccount();
+        userAccountService.update(id, userAccountBean);
+        return ResponseEntityBuilder.success()
+                .message("修改成功")
+                .build();
+    }
+
     @PatchMapping("/status")
     public ResponseEntity<String> updateAvailable(@RequestParam("id") String id) {
         userAccountService.updateAvailable(id);
