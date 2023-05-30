@@ -1,5 +1,6 @@
 package tw.edu.ntub.imd.justforyou.controller;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,14 @@ public class UserAccountController {
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
                 .data(arrayData)
+                .build();
+    }
+
+    @PatchMapping("/status")
+    public ResponseEntity<String> patchStudentStatus(@RequestParam("userId") String userId) {
+        userAccountService.updateAvailable(userId);
+        return ResponseEntityBuilder.success()
+                .message("更改成功")
                 .build();
     }
 }
