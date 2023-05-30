@@ -110,7 +110,7 @@ public class UserAccountController {
                 .build();
     }
 
-    @PatchMapping("")
+    @PatchMapping(path = "")
     public ResponseEntity<String> updateAccountData(@RequestBody UserAccountBean userAccountBean) {
         userAccountService.update(userAccountBean.getUserId(), userAccountBean);
         return ResponseEntityBuilder.success()
@@ -118,7 +118,7 @@ public class UserAccountController {
                 .build();
     }
 
-    @PatchMapping("/profile")
+    @PatchMapping(path = "/profile")
     public ResponseEntity<String> updateAccountProfile(@RequestBody UserAccountBean userAccountBean) {
         String id = SecurityUtils.getLoginUserAccount();
         userAccountService.update(id, userAccountBean);
@@ -127,18 +127,9 @@ public class UserAccountController {
                 .build();
     }
 
-    @PatchMapping("/status")
+    @PatchMapping(path = "/status")
     public ResponseEntity<String> updateAvailable(@RequestParam("id") String id) {
         userAccountService.updateAvailable(id);
-        return ResponseEntityBuilder.success()
-                .message("修改成功")
-                .build();
-    }
-
-    //修改個人資訊
-    @PatchMapping(path = "/")
-    public ResponseEntity<String> updateStudent(@RequestBody UserAccountBean userAccountBean) {
-        userAccountService.update(userAccountBean.getUserId(), userAccountBean);
         return ResponseEntityBuilder.success()
                 .message("修改成功")
                 .build();
