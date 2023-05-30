@@ -49,6 +49,18 @@ public class UserAccountController {
                 .build();
     }
 
+    @GetMapping(path = "/data/count")
+    public ResponseEntity<String> searchKeywordListPage(@RequestParam(name = "userId") String userId,
+                                                        @RequestParam(name = "userName") String userName,
+                                                        @RequestParam(name = "department") String department,
+                                                        int count) {
+        int totalPage = userAccountService.getKeywordListTotalPage(userId, userName, department, count);
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(SingleValueObjectData.create("totalPage", totalPage))
+                .build();
+    }
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<String> getById(@PathVariable(name = "id") String id) {
         UserAccountBean userAccountBean = userAccountService.getById(id)
@@ -89,9 +101,9 @@ public class UserAccountController {
     }
 
     @GetMapping(path = "/count")
-    public ResponseEntity<String> searchTotalCount(@RequestParam(name = "type") String type,
-                                                   @RequestParam(name = "count") int count) {
-        int totalPage = userAccountService.getCount(type, count);
+    public ResponseEntity<String> searchTotalPage(@RequestParam(name = "type") String type,
+                                                  @RequestParam(name = "count") int count) {
+        int totalPage = userAccountService.getTotalPage(type, count);
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
                 .data(SingleValueObjectData.create("totalPage", totalPage))

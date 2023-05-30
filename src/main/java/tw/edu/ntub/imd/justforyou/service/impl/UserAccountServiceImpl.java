@@ -145,10 +145,16 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
     }
 
     @Override
-    public int getCount(String type, int count) {
+    public int getTotalPage(String type, int count) {
         return type.equals("0") ?
                 userAccountDAO.findAll(PageRequest.of(0, count)).getTotalPages() :
                 userAccountDAO.findAll(specification.checkBlank(type), PageRequest.of(0, count)).getTotalPages();
+    }
+
+    @Override
+    public int getKeywordListTotalPage(String userId, String userName, String department, int count) {
+        return userAccountDAO.findAll(specification.checkBlank(userId, userName, department),
+                PageRequest.of(0, count)).getTotalPages();
     }
 
     @Override
