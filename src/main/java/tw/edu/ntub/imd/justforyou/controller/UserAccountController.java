@@ -6,13 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dto.Pager;
-import tw.edu.ntub.imd.justforyou.databaseconfig.entity.UserAccount;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.UserAccountService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
 
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -46,6 +44,19 @@ public class UserAccountController {
         ObjectData objectData = new ObjectData();
         objectData.add("value", userAccountBean.getRole().getValue());
         objectData.add("description", userAccountBean.getRole().getTypeName());
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(objectData)
+                .build();
+    }
+
+    @GetMapping(path = "/profile")
+    public ResponseEntity<String> getAccountProfile() {
+        String id = SecurityUtils.getLoginUserAccount();
+        UserAccountBean userAccountBean = userAccountService.getById(id)
+                .orElseThrow(() -> new NotFoundException("查無此帳號"));
+        ObjectData objectData = new ObjectData();
+        addUserAccountListToObjectData(objectData, userAccountBean);
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
                 .data(objectData)
