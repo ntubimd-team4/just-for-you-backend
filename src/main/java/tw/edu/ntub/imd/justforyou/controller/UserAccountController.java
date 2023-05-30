@@ -37,6 +37,18 @@ public class UserAccountController {
         objectData.add("available", userAccountBean.getAvailable());
     }
 
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<String> getById(@PathVariable(name = "id") String id) {
+        UserAccountBean userAccountBean = userAccountService.getById(id)
+                .orElseThrow(() -> new NotFoundException("查無此帳號"));
+        ObjectData objectData = new ObjectData();
+        addUserAccountListToObjectData(objectData, userAccountBean);
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(objectData)
+                .build();
+    }
+
     @GetMapping(path = "/role")
     public ResponseEntity<String> getAccountRole() {
         String id = SecurityUtils.getLoginUserAccount();
