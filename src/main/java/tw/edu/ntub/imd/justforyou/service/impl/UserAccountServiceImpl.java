@@ -138,6 +138,20 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
     }
 
     @Override
+    public List<UserAccountBean> searchKeywordList(String userId, String userName, String department, Pager pager) {
+        return CollectionUtils.map(
+                userAccountDAO.findAll(specification.checkBlank(userId, userName, department), PageRequest.of(pager.getZeroBasedPage(),
+                        pager.getCount())).getContent(), transformer::transferToBean);
+    }
+
+    @Override
+    public int getCount(String type, int count) {
+        return type.equals("0") ?
+                userAccountDAO.findAll(PageRequest.of(0, count)).getTotalPages() :
+                userAccountDAO.findAll(specification.checkBlank(type), PageRequest.of(0, count)).getTotalPages();
+    }
+
+    @Override
     public void updateAvailable(String userId) {
         Optional<UserAccount> userAccountOptional = userAccountDAO.findById(userId);
         if (userAccountOptional.isPresent()) {
@@ -147,12 +161,5 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
         } else {
             throw new NotFoundException("查無此筆資料： " + userId);
         }
-    }
-
-    @Override
-    public int getCount(String type, int count) {
-        return type.equals("0") ?
-                userAccountDAO.findAll(PageRequest.of(0, count)).getTotalPages() :
-                userAccountDAO.findAll(specification.checkBlank(type), PageRequest.of(0, count)).getTotalPages();
     }
 }

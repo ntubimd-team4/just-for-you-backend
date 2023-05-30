@@ -10,7 +10,9 @@ import java.util.List;
 public interface UserAccountService extends BaseService<UserAccountBean, String>, UserDetailsService {
     List<UserAccountBean> searchData(String type, Pager pager);
 
-    void updateAvailable(String userId);
+    List<UserAccountBean> searchKeywordList(String userId, String userName, String department, Pager pager);
 
     int getCount(String type, int count);
+
+    void updateAvailable(String userId);
 }

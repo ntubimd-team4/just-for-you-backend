@@ -22,4 +22,20 @@ public class UserAccountSpecification {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
+
+    public Specification<UserAccount> checkBlank(String userId, String userName, String department) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (StringUtils.isNotBlank(userId)) {
+                predicates.add(criteriaBuilder.like(root.get(UserAccount_.USER_ID), "%" + userId + "%"));
+            }
+            if (StringUtils.isNotBlank(userName)) {
+                predicates.add(criteriaBuilder.like(root.get(UserAccount_.USER_NAME), "%" + userName + "%"));
+            }
+            if (StringUtils.isNotBlank(department)) {
+                predicates.add(criteriaBuilder.like(root.get(UserAccount_.DEPARTMENT), "%" + department + "%"));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
 }

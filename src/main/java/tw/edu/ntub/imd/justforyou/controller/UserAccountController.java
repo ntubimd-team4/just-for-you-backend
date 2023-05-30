@@ -37,6 +37,18 @@ public class UserAccountController {
         objectData.add("available", userAccountBean.getAvailable());
     }
 
+    @GetMapping(path = "/data")
+    public ResponseEntity<String> searchKeywordList(@RequestParam(name = "userId") String userId,
+                                                    @RequestParam(name = "userName") String userName,
+                                                    @RequestParam(name = "department") String department,
+                                                    Pager pager) {
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(userAccountService.searchKeywordList(userId, userName, department, pager),
+                        this::addUserAccountListToObjectData)
+                .build();
+    }
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<String> getById(@PathVariable(name = "id") String id) {
         UserAccountBean userAccountBean = userAccountService.getById(id)
