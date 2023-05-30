@@ -1,15 +1,18 @@
 package tw.edu.ntub.imd.justforyou.controller;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
+import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dto.Pager;
-import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Role;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.UserAccount;
+import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.UserAccountService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
+
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -33,6 +36,20 @@ public class UserAccountController {
         objectData.add("picture", userAccountBean.getPicture());
         objectData.add("role", userAccountBean.getRole().getTypeName());
         objectData.add("available", userAccountBean.getAvailable());
+    }
+
+    @GetMapping(path = "/role")
+    public ResponseEntity<String> getAccountRole() {
+        String id = SecurityUtils.getLoginUserAccount();
+        UserAccountBean userAccountBean = userAccountService.getById(id)
+                .orElseThrow(() -> new NotFoundException("查無此帳號"));
+        ObjectData objectData = new ObjectData();
+        objectData.add("value", userAccountBean.getRole().getValue());
+        objectData.add("description", userAccountBean.getRole().getTypeName());
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(objectData)
+                .build();
     }
 
     @PatchMapping("/status")
