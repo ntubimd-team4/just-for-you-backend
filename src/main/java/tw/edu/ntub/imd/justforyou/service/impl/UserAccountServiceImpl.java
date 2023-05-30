@@ -121,4 +121,11 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
         }
         throw new UsernameNotFoundException("登入失敗");
     }
+    
+    @Override
+    public void updateAvailable(String userId) {
+        UserAccount userAccount = userAccountDAO.findById(userId).get();
+        userAccount.setAvailable(!userAccount.getAvailable());
+        userAccountDAO.update(userAccount);
+    }
 }
