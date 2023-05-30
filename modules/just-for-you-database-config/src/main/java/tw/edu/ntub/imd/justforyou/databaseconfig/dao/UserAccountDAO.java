@@ -6,6 +6,4 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.UserAccount;
 import java.util.List;
 @Repository
 public interface UserAccountDAO extends BaseDAO<UserAccount, String> {
-    @Query("FROM UserAccount")
-    List<UserAccount> findData();
 }

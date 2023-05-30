@@ -38,6 +38,4 @@ public abstract class BaseServiceImpl<B, E, ID extends Serializable> extends Bas
     public void delete(ID id) {
         baseDAO.deleteById(id);
     }
-
-    public abstract List<UserAccountBean> getStudent();
 }
