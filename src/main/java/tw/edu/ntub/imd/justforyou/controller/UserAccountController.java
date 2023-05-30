@@ -70,4 +70,13 @@ public class UserAccountController {
                 .message("修改成功")
                 .build();
     }
+
+    //修改個人資訊
+    @PatchMapping(path = "/")
+    public ResponseEntity<String> updateStudent(@RequestBody UserAccountBean userAccountBean) {
+        userAccountService.update(userAccountBean.getUserId(), userAccountBean);
+        return ResponseEntityBuilder.success()
+                .message("修改成功")
+                .build();
+    }
 }
