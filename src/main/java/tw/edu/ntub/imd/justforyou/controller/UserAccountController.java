@@ -86,6 +86,14 @@ public class UserAccountController {
                 .build();
     }
 
+    @PatchMapping("")
+    public ResponseEntity<String> updateAccountData(@RequestBody UserAccountBean userAccountBean) {
+        userAccountService.update(userAccountBean.getUserId(), userAccountBean);
+        return ResponseEntityBuilder.success()
+                .message("修改成功")
+                .build();
+    }
+
     @PatchMapping("/profile")
     public ResponseEntity<String> updateAccountProfile(@RequestBody UserAccountBean userAccountBean) {
         String id = SecurityUtils.getLoginUserAccount();
