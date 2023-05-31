@@ -7,6 +7,12 @@ server:
   file:
     name: file
     path: '存放路徑 Ex: D:\just-for-you\UploadFile\${server.file.name}\'
+  summary-token:
+    value: '摘要紀錄的Open Ai Key Token'
+  emotion-token:
+    value: '情緒標籤的Open Ai Key Token'
+  topic-token:
+    value: '諮商主題的Open Ai Key Token'
 logging:
   level:
     sqltiming: DEBUG

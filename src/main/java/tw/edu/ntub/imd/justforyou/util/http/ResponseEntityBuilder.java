@@ -17,6 +17,7 @@ import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -90,7 +91,7 @@ public class ResponseEntityBuilder {
         return data(new CollectionArrayData(resource, addObjectDataConsumer));
     }
 
-    public ResponseEntityBuilder data(Map<String, String> resource) {
+    public ResponseEntityBuilder data(Map<String, List<String>> resource) {
         return data(new MapArrayData(resource));
     }
 

@@ -7,6 +7,7 @@ import tw.edu.ntub.imd.justforyou.util.function.TripleConsumer;
 import tw.edu.ntub.imd.justforyou.util.json.ResponseData;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -23,7 +24,7 @@ public class MapArrayData implements ResponseData {
         this.arrayData = arrayData;
     }
 
-    public MapArrayData(Map<String, String> resource) {
+    public MapArrayData(Map<String, List<String>> resource) {
         this();
         add(resource);
     }
@@ -38,10 +39,10 @@ public class MapArrayData implements ResponseData {
         add(resource, addObjectDataMapConsumer);
     }
 
-    public MapArrayData add(Map<String, String> resource) {
+    public MapArrayData add(Map<String, List<String>> resource) {
         return add(resource, (objectData, key, value) -> {
             objectData.add("code", key);
-            objectData.add("value", value);
+            objectData.add("value", value.toString());
         });
     }
 

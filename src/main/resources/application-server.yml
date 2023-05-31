@@ -6,6 +6,12 @@ server:
   file:
     name: file
     path: 'C:\just-for-you\UploadFile\${server.file.name}\'
+  summary-token:
+    value: ''
+  emotion-token:
+    value: ''
+  topic-token:
+    value: ''
 logging:
   level:
     sqltiming: DEBUG
