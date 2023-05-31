@@ -2,22 +2,21 @@ package tw.edu.ntub.imd.justforyou.databaseconfig.entity;
 
 import lombok.Data;
 import tw.edu.ntub.imd.justforyou.databaseconfig.Config;
-import tw.edu.ntub.imd.justforyou.databaseconfig.entity.converter.BooleanTo1And0Converter;
-import tw.edu.ntub.imd.justforyou.databaseconfig.entity.listener.UserAccountListener;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.listener.TopicListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * 情緒標籤表
+ * 諮商主題表
  *
  * @since 1.0.0
  */
 @Data
 @Entity
-@EntityListeners(UserAccountListener.class)
-@Table(name = "emotion", schema = Config.DATABASE_NAME)
-public class Emotion {
+@EntityListeners(TopicListener.class)
+@Table(name = "topic", schema = Config.DATABASE_NAME)
+public class Topic {
     /**
      * 流水號
      *
@@ -25,8 +24,8 @@ public class Emotion {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "e_id", nullable = false, unique = true)
-    private Integer eId;
+    @Column(name = "t_id", nullable = false, unique = true)
+    private Integer tId;
     /**
      * 對應summary_record的s_id
      *
@@ -35,20 +34,12 @@ public class Emotion {
     @Column(name = "s_id", nullable = false)
     private Integer sId;
     /**
-     * 情緒標籤（對應codelist表中emotion_tag的value）
+     * 諮商主題標籤（對應codelist表中topic的value）
      *
      * @since 1.0.0
      */
-    @Column(name = "emotion_tag", nullable = false)
-    private Integer emotionTag;
-    /**
-     * 啟用狀態(啟用:1/不啟用:0)
-     *
-     * @since 1.0.0
-     */
-    @Convert(converter = BooleanTo1And0Converter.class)
-    @Column(name = "available", nullable = false)
-    private Boolean available;
+    @Column(name = "topic", nullable = false)
+    private Integer topic;
     /**
      * 新增者
      *
