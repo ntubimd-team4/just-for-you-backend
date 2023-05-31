@@ -3,7 +3,7 @@ package tw.edu.ntub.imd.justforyou.databaseconfig.entity;
 import lombok.Data;
 import tw.edu.ntub.imd.justforyou.databaseconfig.Config;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.converter.BooleanTo1And0Converter;
-import tw.edu.ntub.imd.justforyou.databaseconfig.entity.listener.UserAccountListener;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.listener.EmotionListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@EntityListeners(UserAccountListener.class)
+@EntityListeners(EmotionListener.class)
 @Table(name = "emotion", schema = Config.DATABASE_NAME)
 public class Emotion {
     /**
@@ -26,14 +26,14 @@ public class Emotion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "e_id", nullable = false, unique = true)
-    private Integer eId;
+    private Integer eid;
     /**
      * 對應summary_record的s_id
      *
      * @since 1.0.0
      */
     @Column(name = "s_id", nullable = false)
-    private Integer sId;
+    private Integer sid;
     /**
      * 情緒標籤（對應codelist表中emotion_tag的value）
      *
