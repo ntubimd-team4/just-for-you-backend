@@ -1,21 +1,18 @@
 package tw.edu.ntub.imd.justforyou.controller;
 
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
-import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
 import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
+import tw.edu.ntub.imd.justforyou.util.json.object.SingleValueObjectData;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
@@ -30,22 +27,25 @@ public class SummaryRecordController {
         List<String> emotionList = summaryRecordService.saveEmotion(sid, prompt);
         summaryRecordService.saveTopic(sid, prompt);
 
-        List<String> colorList = new ArrayList<>();
-        for (String emotionStr : emotionList) {
-            colorList.add(EmotionCode.transformerToColor(emotionStr));
-        }
-        List<String> colors = colorList.stream().distinct().collect(Collectors.toList());
+//        List<String> colorList = new ArrayList<>();
+//        for (String emotionStr : emotionList) {
+//            colorList.add(EmotionCode.transformerToColor(emotionStr));
+//        }
+//        List<String> colors = colorList.stream().distinct().collect(Collectors.toList());
 
 
-        Map<String, List<String>> data = new HashMap<>();
-        for (String color : colors) {
-            List<String> emotion = EmotionCode.transformerToEmotion(color, emotionList);
-            data.put(color, emotion);
-        }
+//        Map<String, List<String>> data = new HashMap<>();
+//        for (String color : colors) {
+//            List<String> emotion = EmotionCode.transformerToEmotion(color, emotionList);
+//            data.put(color, emotion);
+//        }
+
+        String remoteStart = StringUtils.removeStart(emotionList.toString(), "[");
+        String remoteEnd = StringUtils.removeEnd(remoteStart, "]");
 
         return ResponseEntityBuilder.success()
                 .message("摘要成功")
-                .data(data)
+                .data(SingleValueObjectData.create("value", remoteEnd))
                 .build();
     }
 }
