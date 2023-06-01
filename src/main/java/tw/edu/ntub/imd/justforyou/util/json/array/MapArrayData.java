@@ -1,6 +1,7 @@
 package tw.edu.ntub.imd.justforyou.util.json.array;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.lang3.StringUtils;
 import tw.edu.ntub.imd.justforyou.util.function.AddObjectDataConsumer;
 import tw.edu.ntub.imd.justforyou.util.function.AddObjectDataMapConsumer;
 import tw.edu.ntub.imd.justforyou.util.function.TripleConsumer;
@@ -42,7 +43,9 @@ public class MapArrayData implements ResponseData {
     public MapArrayData add(Map<String, List<String>> resource) {
         return add(resource, (objectData, key, value) -> {
             objectData.add("code", key);
-            objectData.add("value", value.toString());
+            String remoteStart = StringUtils.removeStart(value.toString(), "[");
+            String remoteEnd = StringUtils.removeEnd(remoteStart, "]");
+            objectData.add("value", remoteEnd);
         });
     }
 
