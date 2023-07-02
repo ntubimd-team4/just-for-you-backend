@@ -3,6 +3,7 @@ package tw.edu.ntub.imd.justforyou.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import tw.edu.ntub.imd.justforyou.bean.TopicBean;
 import tw.edu.ntub.imd.justforyou.service.TopicService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
@@ -22,5 +23,13 @@ public class TopicController {
                 .build();
     }
 
+    //刪除諮商主題標籤
+    @DeleteMapping(path = " ")
+    public ResponseEntity<String> deleteTopic(@RequestBody TopicBean detopicBean) {
+        topicService.delete(detopicBean.getTId(),detopicBean);
+        return ResponseEntityBuilder.success()
+                .message("刪除成功")
+                .build();
+    }
 
 }
