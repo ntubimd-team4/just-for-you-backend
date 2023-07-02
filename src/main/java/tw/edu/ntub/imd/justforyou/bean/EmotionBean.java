@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class EmotionBean {
+public class EmotionBean extends TopicBean{
     private Integer eid;
     private String sid;
     private String emotionTag;
