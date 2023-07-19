@@ -7,6 +7,7 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.listener.ConsultationRec
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+
 /**
  * 諮商紀錄
  *

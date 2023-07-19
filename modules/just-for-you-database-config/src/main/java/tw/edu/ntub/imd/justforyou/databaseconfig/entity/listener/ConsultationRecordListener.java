@@ -8,6 +8,7 @@ import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
 
 public class ConsultationRecordListener {
+    
     @PrePersist
     public void preSave(ConsultationRecord consultationRecord) {
         if (consultationRecord.getCreateId() == null) {
