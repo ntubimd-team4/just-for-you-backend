@@ -22,12 +22,12 @@ public class EmotionController {
                 .build();
     }
 
-    @DeleteMapping(path = "/{eId}")
-    public ResponseEntity<String> deleteEmotion(@PathVariable(name = "eId") Integer eId) {
-        EmotionBean emotionBean = emotionService.getById(eId)
-                .orElseThrow(() -> new NotFoundException("找不到資料, eId = " + eId));
+    @DeleteMapping(path = "/{eid}")
+    public ResponseEntity<String> deleteEmotion(@PathVariable(name = "eid") Integer eid) {
+        EmotionBean emotionBean = emotionService.getById(eid)
+                .orElseThrow(() -> new NotFoundException("找不到資料, eid = " + eid));
         emotionBean.setAvailable(!emotionBean.getAvailable());
-        emotionService.update(eId, emotionBean);
+        emotionService.update(eid, emotionBean);
         return ResponseEntityBuilder.success()
                 .message("刪除成功")
                 .build();
