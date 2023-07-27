@@ -14,11 +14,9 @@ import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 public class EmotionController {
     private final EmotionService emotionService;
 
-
-    //修改情緒
     @PatchMapping(path = "")
     public ResponseEntity<String> updateEmotion(@RequestBody EmotionBean emotionBean) {
-        emotionService.update(Integer.valueOf(emotionBean.getEid()),emotionBean);
+        emotionService.update(emotionBean.getEid(), emotionBean);
         return ResponseEntityBuilder.success()
                 .message("修改成功")
                 .build();
