@@ -15,7 +15,7 @@ public class TopicController {
 
     @PatchMapping(path = "")
     public ResponseEntity<String> updateTopicTag(@RequestBody TopicBean topicBean) {
-        topicService.update(topicBean.getTId(), topicBean);
+        topicService.update(topicBean.getTid(), topicBean);
         return ResponseEntityBuilder.success()
                 .message("修改成功")
                 .build();
