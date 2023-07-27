@@ -14,22 +14,20 @@ import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 public class EmotionController {
     private final EmotionService emotionService;
 
-
-    //修改情緒
     @PatchMapping(path = "")
     public ResponseEntity<String> updateEmotion(@RequestBody EmotionBean emotionBean) {
-        emotionService.update(Integer.valueOf(emotionBean.getEid()),emotionBean);
+        emotionService.update(emotionBean.getEid(), emotionBean);
         return ResponseEntityBuilder.success()
                 .message("修改成功")
                 .build();
     }
 
-    @DeleteMapping(path = "/{eId}")
-    public ResponseEntity<String> deleteEmotion(@PathVariable(name = "eId") Integer eId) {
-        EmotionBean emotionBean = emotionService.getById(eId)
-                .orElseThrow(() -> new NotFoundException("找不到資料, eId = " + eId));
+    @DeleteMapping(path = "/{eid}")
+    public ResponseEntity<String> deleteEmotion(@PathVariable(name = "eid") Integer eid) {
+        EmotionBean emotionBean = emotionService.getById(eid)
+                .orElseThrow(() -> new NotFoundException("找不到資料, eid = " + eid));
         emotionBean.setAvailable(!emotionBean.getAvailable());
-        emotionService.update(eId, emotionBean);
+        emotionService.update(eid, emotionBean);
         return ResponseEntityBuilder.success()
                 .message("刪除成功")
                 .build();

@@ -26,14 +26,14 @@ public class ConsultationRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "c_id", nullable = false, unique = true)
-    private Integer cId;
+    private Integer cid;
     /**
      * 對應summary_record的s_id
      *
      * @since 1.0.0
      */
     @Column(name = "s_id", nullable = false)
-    private Integer sId;
+    private Integer sid;
     /**
      * 內容
      *
@@ -70,4 +70,3 @@ public class ConsultationRecord {
     @Column(name = "modify_time")
     private LocalDateTime modifyTime;
 }
-
