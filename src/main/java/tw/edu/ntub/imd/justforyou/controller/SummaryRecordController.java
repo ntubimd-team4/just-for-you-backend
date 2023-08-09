@@ -27,7 +27,7 @@ public class SummaryRecordController {
         List<String> emotionList = summaryRecordService.saveEmotion(sid, prompt);
         summaryRecordService.saveTopic(sid, prompt);
 
-//        List<String> colorList = new ArrayList<>();
+//        List<String> colorList = new ArrayList<>(); //Todo 顏色格式，待復原
 //        for (String emotionStr : emotionList) {
 //            colorList.add(EmotionCode.transformerToColor(emotionStr));
 //        }

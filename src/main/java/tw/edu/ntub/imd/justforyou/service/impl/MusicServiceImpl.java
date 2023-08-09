@@ -27,15 +27,15 @@ public class MusicServiceImpl extends BaseServiceImpl<MusicBean, Music, Integer>
     @Value("${server.emotion-token.value}")
     private String emotionToken;
 
+    // TODO 暫時的accessToken與ids，需更換
     private static final String accessToken = "BQALvY49CLHRROdIqB4o4QoP8rcBnnZbMefzyAHnBYSkGTVKaCR6yA_L98QVxLCex5AFCYBvEDgAwfKKk47QLBjfGM5hpQWcsUVTgnZU58CqFPSSJfNr8AdNvxghIxebEu24sY50bIO71nVEaA0SZG2g7MdfcGRRQVb62bdTzSpgT17elmTwwhTXu0mYdAWbS6t0mYV0UsMs3Wetoibt2YBaeRnjiY6ce8oLJFu4d-74MhiTAr-ZMDyJCs0XoGHXwQ";
     private static final String[] ids = new String[]{"01iyCAUm8EvOFqVWYJ3dVX", "7x9aauaA9cu6tyfpHnqDLo", "0ofHAoxe9vBkTCp2UQIavz"};
     private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
             .setAccessToken(accessToken)
             .build();
     private static final GetSeveralTracksRequest getSeveralTracksRequest = spotifyApi.getSeveralTracks(ids)
-//          .market(CountryCode.SE)
+//          .market(CountryCode.SE)  //TODO 待研究
             .build();
-
 
     private final MusicDAO musicDAO;
     private final MusicTransformer musicTransformer;
@@ -65,7 +65,9 @@ public class MusicServiceImpl extends BaseServiceImpl<MusicBean, Music, Integer>
                 try {
                     emotionText = service.createCompletion(emotionRequest(track.getName())).getChoices().get(0).getText();
 
-                    String[] emotions = {"平靜", "快樂", "狂喜", "友愛", "接受", "信任", "崇敬", "屈服", "擔心", "恐懼", "驚悚", "敬畏", "不解", "驚訝", "驚愕", "反對", "傷感", "悲傷", "悲痛", "懊悔", "厭倦", "厭惡", "憎恨", "鄙夷", "不耐煩", "生氣", "暴怒", "挑釁", "關心", "期待", "警惕", "樂觀"};
+                    String[] emotions = {"平靜", "快樂", "狂喜", "友愛", "接受", "信任", "崇敬", "屈服", "擔心", "恐懼",
+                            "驚悚", "敬畏", "不解", "驚訝", "驚愕", "反對", "傷感", "悲傷", "悲痛", "懊悔", "厭倦", "厭惡",
+                            "憎恨", "鄙夷", "不耐煩", "生氣", "暴怒", "挑釁", "關心", "期待", "警惕", "樂觀"};
                     List<String> emotionList = new ArrayList<>();
                     for (String emotion : emotions) {
                         if (emotionText.contains(emotion)) {
@@ -90,7 +92,8 @@ public class MusicServiceImpl extends BaseServiceImpl<MusicBean, Music, Integer>
     }
 
     private CompletionRequest emotionRequest(String prompt) {
-        String mood = "平靜、快樂、狂喜、友愛、接受、信任、崇敬、屈服、擔心、恐懼、驚悚、敬畏、不解、驚訝、驚愕、反對、傷感、悲傷、悲痛、懊悔、厭倦、厭惡、憎恨、鄙夷、不耐煩、生氣、暴怒、挑釁、關心、期待、警惕、樂觀";
+        String mood = "平靜、快樂、狂喜、友愛、接受、信任、崇敬、屈服、擔心、恐懼、驚悚、敬畏、不解、驚訝、驚愕、" +
+                "反對、傷感、悲傷、悲痛、懊悔、厭倦、厭惡、憎恨、鄙夷、不耐煩、生氣、暴怒、挑釁、關心、期待、警惕、樂觀";
         return CompletionRequest.builder()
                 .model("text-davinci-003")
                 .prompt("請問" + prompt + "在" + mood + "以下這些情緒中帶有哪5個主要情緒")
