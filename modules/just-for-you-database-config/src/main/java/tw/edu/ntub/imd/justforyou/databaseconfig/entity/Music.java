@@ -2,6 +2,7 @@ package tw.edu.ntub.imd.justforyou.databaseconfig.entity;
 
 import lombok.Data;
 import tw.edu.ntub.imd.justforyou.databaseconfig.Config;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.listener.MusicListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
+@EntityListeners(MusicListener.class)
 @Table(name = "music", schema = Config.DATABASE_NAME)
 public class Music {
     /**
