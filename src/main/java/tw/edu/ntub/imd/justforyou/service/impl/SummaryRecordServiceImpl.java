@@ -74,7 +74,15 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     }
 
     private CompletionRequest summaryRecordRequest(String prompt) {
-        return CompletionRequest.builder().model("text-davinci-003").prompt(prompt + "請針對這句話以第一人稱進行簡單摘要").temperature(0.5).maxTokens(2048).topP(1D).frequencyPenalty(0D).presencePenalty(0D).build();
+        return CompletionRequest.builder()
+                .model("text-davinci-003")
+                .prompt(prompt + "請針對這句話以第一人稱進行簡單摘要")
+                .temperature(0.5)
+                .maxTokens(2048)
+                .topP(1D)
+                .frequencyPenalty(0D)
+                .presencePenalty(0D)
+                .build();
     }
 
     @Override
@@ -107,7 +115,15 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
 
     private CompletionRequest emotionRequest(String prompt) {
         String mood = "平靜、快樂、狂喜、友愛、接受、信任、平靜、屈服、擔心、恐懼、驚悚、敬畏、不解、驚訝、驚愕、反對、傷感、悲傷、悲痛、懊悔、厭倦、厭惡、憎恨、鄙夷、不耐煩、生氣、暴怒、挑釁、關心、期待、警惕、樂觀";
-        return CompletionRequest.builder().model("text-davinci-003").prompt(prompt + "請從以下" + mood + "這幾個情緒中判斷出這句話帶有哪些情緒").temperature(0.5).maxTokens(2048).topP(1D).frequencyPenalty(0D).presencePenalty(0D).build();
+        return CompletionRequest.builder()
+                .model("text-davinci-003")
+                .prompt(prompt + "請從以下" + mood + "這幾個情緒中判斷出這句話帶有哪些情緒")
+                .temperature(0.5)
+                .maxTokens(2048)
+                .topP(1D)
+                .frequencyPenalty(0D)
+                .presencePenalty(0D)
+                .build();
     }
 
 
@@ -140,6 +156,14 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
 
     private CompletionRequest topicRequest(String prompt) {
         String topic = "「自我探索」、「情感困擾」、「家庭關係」、「學業學習」、「生理健康」、「心理測驗」、「生涯探索與規劃」、「心理疾患或傾向」、「情緒管理」、「人際關係」、「生活適應」、「網路沉迷」";
-        return CompletionRequest.builder().model("text-davinci-003").prompt(prompt + "請從以下" + topic + "這幾個分類判斷出這句話屬於哪幾個分類").temperature(0.5).maxTokens(2048).topP(1D).frequencyPenalty(0D).presencePenalty(0D).build();
+        return CompletionRequest.builder()
+                .model("text-davinci-003")
+                .prompt(prompt + "請從以下" + topic + "這幾個分類判斷出這句話屬於哪幾個分類")
+                .temperature(0.5)
+                .maxTokens(2048)
+                .topP(1D)
+                .frequencyPenalty(0D)
+                .presencePenalty(0D)
+                .build();
     }
 }
