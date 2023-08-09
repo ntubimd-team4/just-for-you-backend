@@ -3,6 +3,7 @@ package tw.edu.ntub.imd.justforyou.databaseconfig.entity;
 import lombok.Data;
 import tw.edu.ntub.imd.justforyou.databaseconfig.Config;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.converter.BooleanTo1And0Converter;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.listener.MusicRecommendListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
+@EntityListeners(MusicRecommendListener.class)
 @Table(name = "music_recommend", schema = Config.DATABASE_NAME)
 public class MusicRecommend {
     /**

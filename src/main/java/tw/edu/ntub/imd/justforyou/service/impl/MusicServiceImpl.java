@@ -28,8 +28,9 @@ public class MusicServiceImpl extends BaseServiceImpl<MusicBean, Music, Integer>
     private String emotionToken;
 
     // TODO 暫時的accessToken與ids，需更換
-    private static final String accessToken = "BQALvY49CLHRROdIqB4o4QoP8rcBnnZbMefzyAHnBYSkGTVKaCR6yA_L98QVxLCex5AFCYBvEDgAwfKKk47QLBjfGM5hpQWcsUVTgnZU58CqFPSSJfNr8AdNvxghIxebEu24sY50bIO71nVEaA0SZG2g7MdfcGRRQVb62bdTzSpgT17elmTwwhTXu0mYdAWbS6t0mYV0UsMs3Wetoibt2YBaeRnjiY6ce8oLJFu4d-74MhiTAr-ZMDyJCs0XoGHXwQ";
-    private static final String[] ids = new String[]{"01iyCAUm8EvOFqVWYJ3dVX", "7x9aauaA9cu6tyfpHnqDLo", "0ofHAoxe9vBkTCp2UQIavz"};
+    private static final String accessToken = "BQBfX2mHW1uz0__jZENhx-hH9a7OYuvlruAEMnWzhAwxAwhBHvgqti8jj8nkkidvOXz-ehj1vFhmfLWuVi9tyJWOYlgNsTAvlBoY0wyF4s7YFWLshVKolKClfdj2x7ioO6r1Cz5fjQdOSHQ56h40ycqpYq8g2h4f-FELqLOeV2d_dYnANDm6kTwuL5j6ze13aaBNtyagV_W-5KUDNgj0o5gf1Ob5G1wiiH25JLeGdmmyRNmUE0c1FagFrylrj1BOMA";
+    //    private static final String[] ids = new String[]{"01iyCAUm8EvOFqVWYJ3dVX", "7x9aauaA9cu6tyfpHnqDLo", "0ofHAoxe9vBkTCp2UQIavz"};
+    private static final String[] ids = new String[]{"4ZLzoOkj0MPWrTLvooIuaa", "7Dy67OOwBZR61wV979AW8s", "6zTbtySCRStJOv5xA4XvRE"};
     private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
             .setAccessToken(accessToken)
             .build();
