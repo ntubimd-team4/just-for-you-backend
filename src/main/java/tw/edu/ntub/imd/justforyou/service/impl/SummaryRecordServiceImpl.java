@@ -14,6 +14,7 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.SummaryRecord;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Topic;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.TopicCode;
+import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
 import tw.edu.ntub.imd.justforyou.service.transformer.SummaryRecordTransformer;
 
@@ -29,7 +30,6 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     private String emotionToken;
     @Value("${server.topic-token.value}")
     private String topicToken;
-    
     private final SummaryRecordDAO summaryRecordDAO;
     private final SummaryRecordTransformer summaryRecordTransformer;
     private final EmotionDAO emotionDAO;
@@ -56,8 +56,13 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         String id = SecurityUtils.getLoginUserAccount();
 
         OpenAiService service = new OpenAiService(summaryToken, Duration.ofSeconds(60));
-        String summaryRecordText = service.createCompletion(summaryRecordRequest(summaryRecordBean.getPrompt())).getChoices().get(0).getText();
+        String summaryRecordText;
 
+        try {
+            summaryRecordText = service.createCompletion(summaryRecordRequest(summaryRecordBean.getPrompt())).getChoices().get(0).getText();
+        } catch (Exception e) {
+            throw new NotFoundException("請重新發送請求");
+        }
         SummaryRecord summaryRecord = summaryRecordTransformer.transferToEntity(summaryRecordBean);
         summaryRecord.setUserId(id);
         summaryRecord.setContent(summaryRecordBean.getPrompt());
@@ -75,9 +80,13 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     @Override
     public List<String> saveEmotion(Integer sid, String prompt) {
         OpenAiService service = new OpenAiService(emotionToken, Duration.ofSeconds(60));
-        String emotionText = service.createCompletion(emotionRequest(prompt)).getChoices().get(0).getText();
-        System.out.println(emotionText);
+        String emotionText;
 
+        try {
+            emotionText = service.createCompletion(emotionRequest(prompt)).getChoices().get(0).getText();
+        } catch (Exception e) {
+            throw new NotFoundException("請重新發送請求");
+        }
 
         String[] emotions = {"平靜", "快樂", "狂喜", "友愛", "接受", "信任", "平靜", "屈服", "擔心", "恐懼", "驚悚", "敬畏", "不解", "驚訝", "驚愕", "反對", "傷感", "悲傷", "悲痛", "懊悔", "厭倦", "厭惡", "憎恨", "鄙夷", "不耐煩", "生氣", "暴怒", "挑釁", "關心", "期待", "警惕", "樂觀"};
         List<String> emotionList = new ArrayList<>();
@@ -105,7 +114,13 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     @Override
     public void saveTopic(Integer sid, String prompt) {
         OpenAiService service = new OpenAiService(topicToken, Duration.ofSeconds(60));
-        String topicText = service.createCompletion(topicRequest(prompt)).getChoices().get(0).getText();
+        String topicText;
+
+        try {
+            topicText = service.createCompletion(topicRequest(prompt)).getChoices().get(0).getText();
+        } catch (Exception e) {
+            throw new NotFoundException("請重新發送請求");
+        }
 
         String[] topics = {"自我探索", "情感困擾", "家庭關係", "心理疾患或傾向", "情緒管理", "人際關係", "學業學習", "生涯探索與規劃", "生活適應", "網路沉迷", "生理健康", "心理測驗"};
         List<String> topicList = new ArrayList<>();
@@ -117,7 +132,7 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
 
         for (String topicStr : topicList) {
             Topic topic = new Topic();
-            topic.setSId(sid);
+            topic.setSid(sid);
             topic.setTopic(TopicCode.of(topicStr));
             topicDAO.save(topic);
         }
