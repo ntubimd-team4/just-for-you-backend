@@ -25,6 +25,20 @@ public class Music {
     @Column(name = "m_id", nullable = false, unique = true)
     private Integer mid;
     /**
+     * 歌曲
+     *
+     * @since 1.0.0
+     */
+    @Column(name = "song", nullable = false, length = 55)
+    private String song;
+    /**
+     * 歌手
+     *
+     * @since 1.0.0
+     */
+    @Column(name = "singer", nullable = false, length = 55)
+    private String singer;
+    /**
      * 情緒標籤(對應codelist表中emotion_tag的value)
      *
      * @since 1.0.0
