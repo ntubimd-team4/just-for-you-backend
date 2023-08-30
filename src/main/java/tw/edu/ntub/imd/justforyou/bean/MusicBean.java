@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class MusicBean {
     private Integer mid;
     private String song;
-    private String singer;
+    private String link;
     private Integer emotionTag;
     private String createId;
     private LocalDateTime createTime;

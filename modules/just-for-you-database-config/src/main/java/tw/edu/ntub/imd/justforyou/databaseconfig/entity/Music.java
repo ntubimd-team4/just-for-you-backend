@@ -34,12 +34,12 @@ public class Music {
     @Column(name = "song", nullable = false, length = 55)
     private String song;
     /**
-     * 歌手
+     * youtube連結
      *
      * @since 1.0.0
      */
-    @Column(name = "singer", nullable = false, length = 55)
-    private String singer;
+    @Column(name = "link", nullable = false, length = 55)
+    private String link;
     /**
      * 情緒標籤(對應codelist表中emotion_tag的value)
      *
