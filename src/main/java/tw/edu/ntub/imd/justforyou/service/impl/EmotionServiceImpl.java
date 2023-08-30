@@ -1,6 +1,7 @@
 package tw.edu.ntub.imd.justforyou.service.impl;
 
 import org.springframework.stereotype.Service;
+import tw.edu.ntub.birc.common.util.JavaBeanUtils;
 import tw.edu.ntub.imd.justforyou.bean.EmotionBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.EmotionDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.MusicDAO;
@@ -14,8 +15,10 @@ import tw.edu.ntub.imd.justforyou.service.EmotionService;
 import tw.edu.ntub.imd.justforyou.service.transformer.EmotionTransformer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, Integer> implements EmotionService {
@@ -44,19 +47,25 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
     }
 
     @Override
-    public List<String> recommendMusic(Integer sid) {
+    public List<Music> recommendMusic(Integer sid) {
         List<Integer> emotionList = emotionDAO.findBySid(sid);
         List<MusicEmotion> musicList = musicEmotionDAO.findByEmotionTagIn(emotionList);
-        List<String> recommendMusicList = new ArrayList<>();
+        List<Music> recommendMusicList = new ArrayList<>();
         for (MusicEmotion musicEmotion : musicList) {
             MusicRecommend musicRecommend = new MusicRecommend();
             musicRecommend.setSid(sid);
             musicRecommend.setMid(musicEmotion.getMid());
-
-            Optional<Music> music = musicDAO.findByMid(musicEmotion.getMid());
-            music.ifPresent(value -> recommendMusicList.add(value.getSong()));
             musicRecommendDAO.save(musicRecommend);
+
+            Music music = new Music();
+            Optional<Music> musicOptional = musicDAO.findByMid(musicEmotion.getMid());
+            if (musicOptional.isPresent()) {
+                Music musicData = musicOptional.get();
+                JavaBeanUtils.copy(musicData, music);
+            }
+            recommendMusicList.add(music);
         }
-        return recommendMusicList;
+        Collections.shuffle(recommendMusicList);
+        return recommendMusicList.stream().distinct().collect(Collectors.toList()).subList(0, 5);
     }
 }

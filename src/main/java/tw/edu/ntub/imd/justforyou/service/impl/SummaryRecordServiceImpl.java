@@ -117,7 +117,7 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         String mood = "平靜、快樂、狂喜、友愛、接受、信任、崇敬、屈服、擔心、恐懼、驚悚、敬畏、不解、驚訝、驚愕、反對、傷感、悲傷、悲痛、懊悔、厭倦、厭惡、憎恨、鄙夷、不耐煩、生氣、暴怒、挑釁、關心、期待、警惕、樂觀";
         return CompletionRequest.builder()
                 .model("text-davinci-003")
-                .prompt(prompt + "請從以下" + mood + "這幾個情緒中判斷出這句話帶有哪些情緒")
+                .prompt(prompt + "\n請從以下 " + mood + " 這幾個情緒中判斷出這句話主要呈現哪5種情緒")
                 .temperature(0.5)
                 .maxTokens(2048)
                 .topP(1D)
