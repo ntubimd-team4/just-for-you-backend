@@ -21,6 +21,8 @@ public class ConsultationRecordServiceImpl extends BaseServiceImpl<ConsultationR
 
     @Override
     public ConsultationRecordBean save(ConsultationRecordBean consultationRecordBean) {
-        return null;
+        ConsultationRecord consultationRecord =
+                consultationRecordDAO.save(consultationRecordTransformer.transferToEntity(consultationRecordBean));
+        return consultationRecordTransformer.transferToBean(consultationRecord);
     }
 }
