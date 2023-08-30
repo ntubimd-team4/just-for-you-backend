@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import tw.edu.ntub.imd.justforyou.bean.ConsultationRecordBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.ConsultationRecordDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.ConsultationRecord;
+import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.ConsultationRecordService;
 import tw.edu.ntub.imd.justforyou.service.transformer.ConsultationRecordTransformer;
 
@@ -21,6 +22,11 @@ public class ConsultationRecordServiceImpl extends BaseServiceImpl<ConsultationR
 
     @Override
     public ConsultationRecordBean save(ConsultationRecordBean consultationRecordBean) {
-        return null;
+        if (consultationRecordDAO.existsById(consultationRecordBean.getSid())) {
+            throw new NotFoundException("已有此編號紀錄");
+        }
+        ConsultationRecord consultationRecord = consultationRecordDAO.save(consultationRecordTransformer.transferToEntity(consultationRecordBean));
+        return consultationRecordTransformer.transferToBean(consultationRecord);
     }
+
 }

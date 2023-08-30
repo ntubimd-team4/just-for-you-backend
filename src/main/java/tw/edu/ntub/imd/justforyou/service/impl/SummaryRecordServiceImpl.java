@@ -21,6 +21,7 @@ import tw.edu.ntub.imd.justforyou.service.transformer.SummaryRecordTransformer;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean, SummaryRecord, Integer> implements SummaryRecordService {
@@ -136,6 +137,11 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
             topic.setTopic(TopicCode.of(topicStr));
             topicDAO.save(topic);
         }
+    }
+
+    @Override
+    public Optional<Object> getById(String id) {
+        return Optional.empty();
     }
 
     private CompletionRequest topicRequest(String prompt) {
