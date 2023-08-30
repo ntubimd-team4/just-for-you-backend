@@ -18,16 +18,16 @@ public class ConsultationRecordController {
     private final ConsultationRecordService consultationRecordService;
 
     @PatchMapping(path = "")
-    public ResponseEntity<String> updateStudent(@RequestBody ConsultationRecordBean consultationRecordBean) {
-        consultationRecordService.update(consultationRecordBean.getCid() ,consultationRecordBean);
+    public ResponseEntity<String> updateConsultationRecord(@RequestBody ConsultationRecordBean consultationRecordBean) {
+        consultationRecordService.update(consultationRecordBean.getCid(), consultationRecordBean);
         return ResponseEntityBuilder.success()
                 .message("修改成功")
                 .build();
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<String> createStudent(@Valid @RequestBody ConsultationRecordBean consultationRecordBean,
-                                                BindingResult bindingResult) {
+    public ResponseEntity<String> createConsultationRecord(@Valid @RequestBody ConsultationRecordBean consultationRecordBean,
+                                                           BindingResult bindingResult) {
         BindingResultUtils.validate(bindingResult);
         consultationRecordService.save(consultationRecordBean);
         return ResponseEntityBuilder

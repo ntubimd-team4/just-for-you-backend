@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
+import tw.edu.ntub.imd.justforyou.service.EmotionService;
 import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
-import tw.edu.ntub.imd.justforyou.util.json.object.SingleValueObjectData;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping(path = "/summary_record")
 public class SummaryRecordController {
     private final SummaryRecordService summaryRecordService;
+    private final EmotionService emotionService;
 
     @PostMapping(path = "")
     public ResponseEntity<String> openAi(@RequestBody SummaryRecordBean summaryRecordBean) {
@@ -26,7 +27,7 @@ public class SummaryRecordController {
         List<String> emotionList = summaryRecordService.saveEmotion(sid, prompt);
         summaryRecordService.saveTopic(sid, prompt);
 
-//        List<String> colorList = new ArrayList<>();
+//        List<String> colorList = new ArrayList<>(); //Todo 顏色格式，待復原
 //        for (String emotionStr : emotionList) {
 //            colorList.add(EmotionCode.transformerToColor(emotionStr));
 //        }
@@ -39,13 +40,24 @@ public class SummaryRecordController {
 //            data.put(color, emotion);
 //        }
 
-        String remoteStart = StringUtils.removeStart(emotionList.toString(), "[");
-        String remoteEnd = StringUtils.removeEnd(remoteStart, "]");
+        String value = remoteSymbol(emotionList);
+        String music = remoteSymbol(emotionService.recommendMusic(sid));
+
+
+        ObjectData objectData = new ObjectData();
+        objectData.add("value", value);
+        objectData.add("music", music);
 
         return ResponseEntityBuilder.success()
                 .message("摘要成功")
-                .data(SingleValueObjectData.create("value", remoteEnd))
+//                .data(SingleValueObjectData.create("value", remoteEnd)) // TODO 一評摘要API回傳格式
+                .data(objectData)
                 .build();
+    }
+
+    private String remoteSymbol(List<String> list) {
+        String remoteStart = StringUtils.removeStart(list.toString(), "[");
+        return StringUtils.removeEnd(remoteStart, "]");
     }
 
     @GetMapping(path = "", params = {"sid"})
