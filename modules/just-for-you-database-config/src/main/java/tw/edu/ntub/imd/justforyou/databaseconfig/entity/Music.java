@@ -41,13 +41,6 @@ public class Music {
     @Column(name = "link", nullable = false, length = 55)
     private String link;
     /**
-     * 情緒標籤(對應codelist表中emotion_tag的value)
-     *
-     * @since 1.0.0
-     */
-    @Column(name = "emotion_tag", nullable = false)
-    private Integer emotionTag;
-    /**
      * 新增者
      *
      * @since 1.0.0
