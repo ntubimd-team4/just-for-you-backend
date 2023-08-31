@@ -5,10 +5,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.EmotionService;
 import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
+import tw.edu.ntub.imd.justforyou.util.json.object.CollectionObjectData;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
 
 import java.util.List;
@@ -41,12 +43,12 @@ public class SummaryRecordController {
 //        }
 
         String value = remoteSymbol(emotionList);
-        String music = remoteSymbol(emotionService.recommendMusic(sid));
+        List<Music> musicList = emotionService.recommendMusic(sid);
 
 
         ObjectData objectData = new ObjectData();
         objectData.add("value", value);
-        objectData.add("music", music);
+        addMusicListToObjectData(objectData, musicList);
 
         return ResponseEntityBuilder.success()
                 .message("摘要成功")
@@ -60,7 +62,15 @@ public class SummaryRecordController {
         return StringUtils.removeEnd(remoteStart, "]");
     }
 
-    @GetMapping(path = "", params = {"sid"})
+    private void addMusicListToObjectData(ObjectData objectData, List<Music> list) {
+        CollectionObjectData data = objectData.createCollectionData();
+        data.add("musicList", list,
+                (contentData, content) -> {
+                    contentData.add("mid", content.getMid());
+                    contentData.add("song", content.getSong());
+                    contentData.add("link", content.getLink());
+                });
+    }
     public ResponseEntity<String> getSummaryRecord(@RequestParam(name = "sid") String id) {
         ObjectData objectData = new ObjectData();
         SummaryRecordBean summaryRecordBean = summaryRecordService.getById(Integer.valueOf(id)).orElseThrow(() -> new NotFoundException("查無此摘要，請確認是否正確"));
