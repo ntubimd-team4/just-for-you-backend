@@ -66,6 +66,8 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
             recommendMusicList.add(music);
         }
         Collections.shuffle(recommendMusicList);
-        return recommendMusicList.stream().distinct().collect(Collectors.toList()).subList(0, 5);
+        return recommendMusicList.size() > 5 ?
+                recommendMusicList.stream().distinct().collect(Collectors.toList()).subList(0, 5) :
+                recommendMusicList;
     }
 }

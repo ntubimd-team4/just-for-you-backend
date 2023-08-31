@@ -4,6 +4,7 @@ import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import tw.edu.ntub.birc.common.util.CollectionUtils;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.EmotionDAO;
@@ -152,6 +153,12 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
             topic.setTopic(TopicCode.of(topicStr));
             topicDAO.save(topic);
         }
+    }
+
+    @Override
+    public List<SummaryRecordBean> searchSummaryRecordList(String userId) {
+        return CollectionUtils.map(summaryRecordDAO.findByUserIdOrderByEstablishTimeDesc(userId),
+                summaryRecordTransformer::transferToBean);
     }
 
     private CompletionRequest topicRequest(String prompt) {

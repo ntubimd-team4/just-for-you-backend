@@ -1,11 +1,14 @@
 package tw.edu.ntub.imd.justforyou.service.impl;
 
 import org.springframework.stereotype.Service;
+import tw.edu.ntub.birc.common.util.CollectionUtils;
 import tw.edu.ntub.imd.justforyou.bean.ConsultationRecordBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.ConsultationRecordDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.ConsultationRecord;
 import tw.edu.ntub.imd.justforyou.service.ConsultationRecordService;
 import tw.edu.ntub.imd.justforyou.service.transformer.ConsultationRecordTransformer;
+
+import java.util.List;
 
 @Service
 public class ConsultationRecordServiceImpl extends BaseServiceImpl<ConsultationRecordBean, ConsultationRecord, Integer> implements ConsultationRecordService {
@@ -24,5 +27,11 @@ public class ConsultationRecordServiceImpl extends BaseServiceImpl<ConsultationR
         ConsultationRecord consultationRecord =
                 consultationRecordDAO.save(consultationRecordTransformer.transferToEntity(consultationRecordBean));
         return consultationRecordTransformer.transferToBean(consultationRecord);
+    }
+
+    @Override
+    public List<ConsultationRecordBean> searchBySid(Integer sid) {
+        return CollectionUtils.map(consultationRecordDAO.findBySidOrderByCreateTimeDesc(sid),
+                consultationRecordTransformer::transferToBean);
     }
 }
