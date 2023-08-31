@@ -23,4 +23,13 @@ public enum TopicCode {
         }
         return null;
     }
+
+    public static String of(Integer topic) {
+        for (TopicCode topicCode : TopicCode.values()) {
+            if (topicCode.getValue().equals(topic)) {
+                return topicCode.getDescription();
+            }
+        }
+        return null;
+    }
 }

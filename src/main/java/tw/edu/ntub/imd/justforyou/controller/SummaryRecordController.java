@@ -1,14 +1,15 @@
 package tw.edu.ntub.imd.justforyou.controller;
 
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tw.edu.ntub.imd.justforyou.bean.ConsultationRecordBean;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
+import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
-import tw.edu.ntub.imd.justforyou.service.EmotionService;
-import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
+import tw.edu.ntub.imd.justforyou.service.*;
+import tw.edu.ntub.imd.justforyou.util.data.SymbolUtils;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 import tw.edu.ntub.imd.justforyou.util.json.object.CollectionObjectData;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
@@ -17,10 +18,13 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(path = "/summary_record")
+@RequestMapping(path = "/summary-record")
 public class SummaryRecordController {
     private final SummaryRecordService summaryRecordService;
+    private final ConsultationRecordService consultationRecordService;
+    private final UserAccountService userAccountService;
     private final EmotionService emotionService;
+    private final TopicService topicService;
 
     @PostMapping(path = "")
     public ResponseEntity<String> openAi(@RequestBody SummaryRecordBean summaryRecordBean) {
@@ -42,7 +46,7 @@ public class SummaryRecordController {
 //            data.put(color, emotion);
 //        }
 
-        String value = remoteSymbol(emotionList);
+        String value = SymbolUtils.remoteSymbol(emotionList);
         List<Music> musicList = emotionService.recommendMusic(sid);
 
 
@@ -57,11 +61,6 @@ public class SummaryRecordController {
                 .build();
     }
 
-    private String remoteSymbol(List<String> list) {
-        String remoteStart = StringUtils.removeStart(list.toString(), "[");
-        return StringUtils.removeEnd(remoteStart, "]");
-    }
-
     private void addMusicListToObjectData(ObjectData objectData, List<Music> list) {
         CollectionObjectData data = objectData.createCollectionData();
         data.add("musicList", list,
@@ -71,15 +70,51 @@ public class SummaryRecordController {
                     contentData.add("link", content.getLink());
                 });
     }
-    public ResponseEntity<String> getSummaryRecord(@RequestParam(name = "sid") String id) {
+
+    @GetMapping(path = "")
+    public ResponseEntity<String> searchSummaryRecord(@RequestParam(name = "userId") String userId) {
         ObjectData objectData = new ObjectData();
-        SummaryRecordBean summaryRecordBean = summaryRecordService.getById(Integer.valueOf(id)).orElseThrow(() -> new NotFoundException("查無此摘要，請確認是否正確"));
-        objectData.add("sid", summaryRecordBean.getSid());
-        objectData.add("userId", summaryRecordBean.getUserId());
-        objectData.add("summary", summaryRecordBean.getSummary());
+        addUserAccountToObjectData(userId, objectData);
+        addSummaryListToObjectData(objectData, summaryRecordService.searchSummaryRecordList(userId));
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
                 .data(objectData)
                 .build();
+    }
+
+    private void addUserAccountToObjectData(String userId, ObjectData objectData) {
+        UserAccountBean userAccountBean = userAccountService.getById(userId)
+                .orElseThrow(() -> new NotFoundException("查無此學生"));
+        objectData.add("userId", userAccountBean.getUserId());
+        objectData.add("userName", userAccountBean.getUserName());
+        objectData.add("department", userAccountBean.getDepartment());
+        objectData.add("role", userAccountBean.getRole().getTypeName());
+    }
+
+    private void addSummaryListToObjectData(ObjectData objectData, List<SummaryRecordBean> list) {
+        CollectionObjectData data = objectData.createCollectionData();
+        data.add("summaryRecordList", list,
+                (contentData, content) -> {
+                    contentData.add("sid", content.getSid());
+                    contentData.add("summary", content.getSummary());
+                    contentData.add("establishTime", content.getEstablishTime());
+                    contentData.add("topic", addTopicToObjectData(content.getSid()));
+                    addConsultationListToObjectData(contentData, consultationRecordService.searchBySid(content.getSid()));
+                });
+    }
+
+    private String addTopicToObjectData(Integer sid) {
+        return topicService.searchBySid(sid);
+    }
+
+    private void addConsultationListToObjectData(ObjectData objectData, List<ConsultationRecordBean> list) {
+        CollectionObjectData data = objectData.createCollectionData();
+        data.add("consultationRecordList", list,
+                (contentData, content) -> {
+                    contentData.add("cid", content.getCid());
+                    contentData.add("content", content.getContent());
+                    contentData.add("createId", content.getCreateId());
+                    contentData.add("createTime", content.getCreateTime());
+                });
     }
 }
