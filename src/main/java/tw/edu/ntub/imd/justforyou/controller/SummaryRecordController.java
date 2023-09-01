@@ -1,5 +1,7 @@
 package tw.edu.ntub.imd.justforyou.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
 
 import java.util.List;
 
+@Tag(name = "摘要相關 /summary-record")
 @AllArgsConstructor
 @RestController
 @RequestMapping(path = "/summary-record")
@@ -26,6 +29,7 @@ public class SummaryRecordController {
     private final EmotionService emotionService;
     private final TopicService topicService;
 
+    @Operation(summary = "輸入心情小語", description = "wireframe pdf第3頁畫面")
     @PostMapping(path = "")
     public ResponseEntity<String> openAi(@RequestBody SummaryRecordBean summaryRecordBean) {
         String prompt = summaryRecordBean.getPrompt();
@@ -71,6 +75,7 @@ public class SummaryRecordController {
                 });
     }
 
+    @Operation(summary = "時間軸、摘要紀錄查詢", description = "wireframe pdf第9頁")
     @GetMapping(path = "")
     public ResponseEntity<String> searchSummaryRecord(@RequestParam(name = "userId") String userId) {
         ObjectData objectData = new ObjectData();
@@ -93,18 +98,34 @@ public class SummaryRecordController {
 
     private void addSummaryListToObjectData(ObjectData objectData, List<SummaryRecordBean> list) {
         CollectionObjectData data = objectData.createCollectionData();
-        data.add("summaryRecordList", list,
-                (contentData, content) -> {
-                    contentData.add("sid", content.getSid());
-                    contentData.add("summary", content.getSummary());
-                    contentData.add("establishTime", content.getEstablishTime());
-                    contentData.add("topic", addTopicToObjectData(content.getSid()));
-                    addConsultationListToObjectData(contentData, consultationRecordService.searchBySid(content.getSid()));
-                });
+        data.add("summaryRecordList", list, this::addSummaryObject);
+    }
+
+    private void addSummaryObject(ObjectData objectData, SummaryRecordBean summaryRecordBean) {
+        objectData.add("sid", summaryRecordBean.getSid());
+        objectData.add("content", summaryRecordBean.getContent());
+        objectData.add("summary", summaryRecordBean.getSummary());
+        objectData.add("establishTime", summaryRecordBean.getEstablishTime());
+        objectData.add("topic", addTopicToObjectData(summaryRecordBean.getSid()));
     }
 
     private String addTopicToObjectData(Integer sid) {
         return topicService.searchBySid(sid);
+    }
+
+    @Operation(summary = "單查時間軸、摘要紀錄詳細資訊", description = "wireframe pdf最後一頁")
+    @GetMapping(path = "/{sid}")
+    public ResponseEntity<String> getSummaryRecord(@PathVariable(name = "sid") Integer sid) {
+        ObjectData objectData = new ObjectData();
+        SummaryRecordBean summaryRecordBean = summaryRecordService.getById(sid)
+                .orElseThrow(() -> new NotFoundException("查無此摘要，請確認是否正確"));
+        addUserAccountToObjectData(summaryRecordBean.getUserId(), objectData);
+        addSummaryObject(objectData, summaryRecordBean);
+        addConsultationListToObjectData(objectData, consultationRecordService.searchBySid(summaryRecordBean.getSid()));
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(objectData)
+                .build();
     }
 
     private void addConsultationListToObjectData(ObjectData objectData, List<ConsultationRecordBean> list) {
