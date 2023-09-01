@@ -21,7 +21,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
                         "      \"message\": string,\n" +
                         "      \"data\": (參考RequestBody)\n" +
                         "  }\n" +
-                        "  ```"
+                        "  ```" +
+                        "\n" +
+                        "如果要測試的話要把後端 SecurityConfig 檔的權限關掉　 https://hackmd.io/_uploads/HyTqSEkC3.jpg"
         )
 )
 public class SwaggerConfig {
