@@ -1,5 +1,7 @@
 package tw.edu.ntub.imd.justforyou.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,12 +10,14 @@ import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.EmotionService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 
+@Tag(name = "情緒標籤 /emotion")
 @AllArgsConstructor
 @RestController
 @RequestMapping(path = "/emotion")
 public class EmotionController {
     private final EmotionService emotionService;
 
+    @Operation(summary = "修改情緒標籤")
     @PatchMapping(path = "")
     public ResponseEntity<String> updateEmotion(@RequestBody EmotionBean emotionBean) {
         emotionService.update(emotionBean.getEid(), emotionBean);
@@ -22,6 +26,7 @@ public class EmotionController {
                 .build();
     }
 
+    @Operation(summary = "刪除情緒標籤")
     @DeleteMapping(path = "/{eid}")
     public ResponseEntity<String> deleteEmotion(@PathVariable(name = "eid") Integer eid) {
         EmotionBean emotionBean = emotionService.getById(eid)
