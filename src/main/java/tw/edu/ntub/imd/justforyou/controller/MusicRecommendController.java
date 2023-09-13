@@ -12,5 +12,5 @@ import tw.edu.ntub.imd.justforyou.service.MusicRecommendService;
 @RequestMapping(path = "/music-recommend")
 public class MusicRecommendController {
     private final MusicRecommendService musicRecommendService;
-    
+
 }
