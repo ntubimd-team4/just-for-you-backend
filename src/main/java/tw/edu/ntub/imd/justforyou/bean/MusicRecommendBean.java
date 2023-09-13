@@ -12,9 +12,9 @@ public class MusicRecommendBean {
      */
     private Integer sid;
     /**
-     * @see tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music#mid
+     * @see tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicEmotion#id
      */
-    private Integer mid;
+    private Integer musicEmoId;
     private Boolean collection;
     private String createId;
     private LocalDateTime createTime;

@@ -23,7 +23,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
                         "  }\n" +
                         "  ```" +
                         "\n" +
-                        "如果要測試的話要把後端 SecurityConfig 檔的權限關掉　 https://hackmd.io/_uploads/HyTqSEkC3.jpg"
+                        "如果要測試的話要把後端 SecurityConfig 檔的權限關掉　 " +
+                        "[圖片連結](https://hackmd.io/_uploads/HyTqSEkC3.jpg)"
         )
 )
 public class SwaggerConfig {
