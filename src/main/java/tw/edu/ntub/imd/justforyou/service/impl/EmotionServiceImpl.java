@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, Integer> implements EmotionService {
@@ -49,12 +50,12 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
     @Override
     public List<Music> recommendMusic(Integer sid) {
         List<Integer> emotionList = emotionDAO.findBySid(sid);
-        List<MusicEmotion> musicList = musicEmotionDAO.findByEmotionTagIn(emotionList);
+        List<MusicEmotion> musicEmotionList = musicEmotionDAO.findByEmotionTagIn(emotionList);
         List<Music> recommendMusicList = new ArrayList<>();
-        for (MusicEmotion musicEmotion : musicList) {
+        for (MusicEmotion musicEmotion : musicEmotionList) {
             MusicRecommend musicRecommend = new MusicRecommend();
             musicRecommend.setSid(sid);
-            musicRecommend.setMid(musicEmotion.getMid());
+            musicRecommend.setMusicEmoId(musicEmotion.getId());
             musicRecommendDAO.save(musicRecommend);
 
             Music music = new Music();
@@ -66,8 +67,9 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
             recommendMusicList.add(music);
         }
         Collections.shuffle(recommendMusicList);
-        return recommendMusicList.size() > 5 ?
+        Stream<Music> musicStream = recommendMusicList.stream().distinct();
+        return musicStream.count() > 5 ?
                 recommendMusicList.stream().distinct().collect(Collectors.toList()).subList(0, 5) :
-                recommendMusicList;
+                recommendMusicList.stream().distinct().collect(Collectors.toList());
     }
 }

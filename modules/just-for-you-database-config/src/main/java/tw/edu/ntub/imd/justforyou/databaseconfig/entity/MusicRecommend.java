@@ -35,12 +35,12 @@ public class MusicRecommend {
     @Column(name = "s_id", nullable = false)
     private Integer sid;
     /**
-     * 對應music表的m_id
+     * 對應music_emotion表的id
      *
      * @since 1.0.0
      */
-    @Column(name = "m_id", nullable = false)
-    private Integer mid;
+    @Column(name = "music_emo_id", nullable = false)
+    private Integer musicEmoId;
     /**
      * 是否收藏(是:1/否:0)
      *
