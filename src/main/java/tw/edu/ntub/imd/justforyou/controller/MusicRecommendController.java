@@ -20,7 +20,7 @@ public class MusicRecommendController {
 
     @Operation(summary = "音樂收藏 - 修改收藏狀態")
     @PatchMapping(path = "/collection")
-    public ResponseEntity<String> updateCollection(@RequestParam("id") String id) {
+    public ResponseEntity<String> updateCollection(@RequestParam("id") Integer id) {
         musicRecommendService.updateCollection(id);
         return ResponseEntityBuilder.success()
                 .message("修改成功")

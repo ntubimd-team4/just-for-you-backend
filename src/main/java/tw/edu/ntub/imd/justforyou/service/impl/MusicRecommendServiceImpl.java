@@ -33,14 +33,14 @@ public class MusicRecommendServiceImpl extends BaseServiceImpl<MusicRecommendBea
     }
 
     @Override
-    public void updateCollection(String rId) {
-        Optional<MusicRecommend> musicRecommendOptional = musicRecommendDAO.findById(Integer.valueOf(rId));
+    public void updateCollection(Integer id) {
+        Optional<MusicRecommend> musicRecommendOptional = musicRecommendDAO.findById(id);
         if (musicRecommendOptional.isPresent()) {
             MusicRecommend musicRecommend = musicRecommendOptional.get();
             musicRecommend.setCollection(!musicRecommend.getCollection());
             musicRecommendDAO.update(musicRecommend);
         } else {
-            throw new NotFoundException("查無此筆資料： " + rId);
+            throw new NotFoundException("查無此筆資料： " + id);
         }
     }
 }
