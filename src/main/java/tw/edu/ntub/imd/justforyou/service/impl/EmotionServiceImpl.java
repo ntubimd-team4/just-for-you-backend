@@ -14,12 +14,8 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicRecommend;
 import tw.edu.ntub.imd.justforyou.service.EmotionService;
 import tw.edu.ntub.imd.justforyou.service.transformer.EmotionTransformer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, Integer> implements EmotionService {
@@ -51,8 +47,14 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
     public List<Music> recommendMusic(Integer sid) {
         List<Integer> emotionList = emotionDAO.findBySid(sid);
         List<MusicEmotion> musicEmotionList = musicEmotionDAO.findByEmotionTagIn(emotionList);
+        List<MusicEmotion> collect = musicEmotionList.stream().collect(Collectors.collectingAndThen(
+                Collectors.toCollection(() -> new TreeSet<>(
+                        Comparator.comparing(
+                                MusicEmotion::getMid))), ArrayList::new));
+        collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 5);
+
         List<Music> recommendMusicList = new ArrayList<>();
-        for (MusicEmotion musicEmotion : musicEmotionList) {
+        for (MusicEmotion musicEmotion : collect) {
             MusicRecommend musicRecommend = new MusicRecommend();
             musicRecommend.setSid(sid);
             musicRecommend.setMusicEmoId(musicEmotion.getId());
@@ -66,10 +68,6 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
             }
             recommendMusicList.add(music);
         }
-        Collections.shuffle(recommendMusicList);
-        Stream<Music> musicStream = recommendMusicList.stream().distinct();
-        return musicStream.count() > 5 ?
-                recommendMusicList.stream().distinct().collect(Collectors.toList()).subList(0, 5) :
-                recommendMusicList.stream().distinct().collect(Collectors.toList());
+        return recommendMusicList;
     }
 }
