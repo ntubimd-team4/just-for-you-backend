@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class RecommendRecordBean {
+    private String id;
     /**
      * @see tw.edu.ntub.imd.justforyou.databaseconfig.entity.SummaryRecord#sid
      */

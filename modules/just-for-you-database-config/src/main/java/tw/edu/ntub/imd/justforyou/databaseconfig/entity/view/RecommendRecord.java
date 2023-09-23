@@ -19,11 +19,16 @@ import java.time.LocalDateTime;
 @Immutable
 public class RecommendRecord {
     /**
+     * UUID流水號
+     */
+    @Id
+    @Column(name = "id",nullable = false,unique = true)
+    private String id;
+    /**
      * 摘要紀錄流水號
      *
      * @since 1.0.0
      */
-    @Id
     @Column(name = "s_id", nullable = false, unique = true)
     private Integer sid;
     /**
