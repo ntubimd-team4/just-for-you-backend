@@ -51,6 +51,7 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
                 Collectors.toCollection(() -> new TreeSet<>(
                         Comparator.comparing(
                                 MusicEmotion::getMid))), ArrayList::new));
+        Collections.shuffle(collect);
         collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 5);
 
         List<Music> recommendMusicList = new ArrayList<>();
