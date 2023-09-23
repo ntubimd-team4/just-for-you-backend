@@ -8,6 +8,7 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.view.RecommendRecord;
 import tw.edu.ntub.imd.justforyou.service.RecommendRecordService;
 import tw.edu.ntub.imd.justforyou.service.transformer.RecommendRecordTransformer;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,8 +23,26 @@ public class RecommendRecordServiceImpl extends BaseViewServiceImpl<RecommendRec
     }
 
     @Override
-    public List<RecommendRecordBean> searchByUserId(String userId) {
+    public List<LocalDateTime> searchByUserId(String userId) {
+        return recommendRecordDAO.findByUserId(userId);
+    }
+
+    @Override
+    public List<LocalDateTime> searchByUserIdAndEmotionTag(String userId, Integer tag) {
+        return recommendRecordDAO.findByTag(userId, tag);
+    }
+
+    @Override
+    public List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime) {
         return CollectionUtils.map(
-                recommendRecordDAO.findByUserId(userId), recommendRecordTransformer::transferToBean);
+                recommendRecordDAO.findByUserIdAndEstablishTime(userId, establishTime),
+                recommendRecordTransformer::transferToBean);
+    }
+
+    @Override
+    public List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime, Integer tag) {
+        return CollectionUtils.map(
+                recommendRecordDAO.findByUserIdAndEstablishTimeAndEmotionTag(userId, establishTime, tag),
+                recommendRecordTransformer::transferToBean);
     }
 }
