@@ -50,6 +50,7 @@ public class RecommendRecordController {
         CollectionObjectData data = objectData.createCollectionData();
         data.add("playList", list,
                 (contentData, content) -> {
+                    contentData.add("rid", content.getRid());
                     contentData.add("song", content.getSong());
                     contentData.add("link", content.getLink());
                     contentData.add("emotionTag", content.getEmotionTag());

@@ -140,8 +140,8 @@ public class UserAccountController {
 
     @Operation(summary = "人員管理 - 修改啟用狀態")
     @PatchMapping(path = "/status")
-    public ResponseEntity<String> updateAvailable(@RequestParam("id") String id) {
-        userAccountService.updateAvailable(id);
+    public ResponseEntity<String> updateAvailable(@RequestBody UserAccountBean userAccountBean) {
+        userAccountService.updateAvailable(userAccountBean.getUserId());
         return ResponseEntityBuilder.success()
                 .message("修改成功")
                 .build();
