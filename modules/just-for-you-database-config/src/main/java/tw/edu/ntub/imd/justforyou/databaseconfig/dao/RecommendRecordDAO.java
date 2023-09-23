@@ -10,12 +10,12 @@ import java.util.List;
 
 @Repository
 public interface RecommendRecordDAO extends BaseViewDAO<RecommendRecord, Integer> {
-    @Query("SELECT DISTINCT r.establishTime FROM RecommendRecord r WHERE r.userId = :userId")
+    @Query("SELECT DISTINCT r.establishTime FROM RecommendRecord r WHERE r.userId = :userId ORDER BY r.establishTime DESC")
     List<LocalDateTime> findByUserId(@Param("userId") String userId);
 
     List<RecommendRecord> findByUserIdAndEstablishTime(String userId, LocalDateTime establishTime);
 
-    @Query("SELECT DISTINCT r.establishTime FROM RecommendRecord r WHERE r.userId = :userId AND r.emotionTag = :emotionTag")
+    @Query("SELECT DISTINCT r.establishTime FROM RecommendRecord r WHERE r.userId = :userId AND r.emotionTag = :emotionTag ORDER BY r.establishTime DESC")
     List<LocalDateTime> findByTag(@Param("userId") String userId, @Param("emotionTag") Integer emotionTag);
 
     List<RecommendRecord> findByUserIdAndEstablishTimeAndEmotionTag(String userId, LocalDateTime establishTime, Integer emotionTag);
