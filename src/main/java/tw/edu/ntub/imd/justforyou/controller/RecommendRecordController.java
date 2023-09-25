@@ -27,8 +27,8 @@ import java.util.List;
 public class RecommendRecordController {
     private final RecommendRecordService recommendRecordService;
 
-    @Operation(summary = "推薦紀錄 - 全查(目前無分頁)", description = "wireframe pdf第5頁畫面")
-    @GetMapping(path = "/data")
+    @Operation(summary = "全查(目前無分頁)", description = "wireframe pdf第5頁畫面")
+    @GetMapping(path = "")
     public ResponseEntity<String> searchUserRecommendRecord() {
         ArrayData arrayData = new ArrayData();
         String userId = SecurityUtils.getLoginUserAccount();

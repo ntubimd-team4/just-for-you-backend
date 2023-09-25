@@ -37,7 +37,7 @@ public class UserAccountController {
     }
 
     @Operation(summary = "人員管理 - 全查")
-    @GetMapping(path = "/list")
+    @GetMapping(path = "")
     public ResponseEntity<String> searchAll(@RequestParam(name = "type") String type, Pager pager) {
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
@@ -67,7 +67,7 @@ public class UserAccountController {
     }
 
     @Operation(summary = "人員管理 - 模糊查詢")
-    @GetMapping(path = "/data")
+    @GetMapping(path = "/query")
     public ResponseEntity<String> searchKeywordList(@RequestParam(name = "userId") String userId,
                                                     @RequestParam(name = "userName") String userName,
                                                     @RequestParam(name = "department") String department,
@@ -80,7 +80,7 @@ public class UserAccountController {
     }
 
     @Operation(summary = "人員管理 - 模糊查的總頁數查詢")
-    @GetMapping(path = "/data/count")
+    @GetMapping(path = "/query/count")
     public ResponseEntity<String> searchKeywordListPage(@RequestParam(name = "userId") String userId,
                                                         @RequestParam(name = "userName") String userName,
                                                         @RequestParam(name = "department") String department,
