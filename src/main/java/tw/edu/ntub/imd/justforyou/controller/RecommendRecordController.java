@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tw.edu.ntub.imd.justforyou.bean.RecommendRecordBean;
 import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
+import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
 import tw.edu.ntub.imd.justforyou.service.RecommendRecordService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 import tw.edu.ntub.imd.justforyou.util.json.array.ArrayData;
@@ -76,5 +77,20 @@ public class RecommendRecordController {
                 .message("查詢成功")
                 .data(arrayData)
                 .build();
+    }
+
+    @Operation(summary = "使用者有的情緒標籤")
+    @GetMapping(path = "/emotion-tag")
+    public ResponseEntity<String> searchEmotionTag() {
+        return ResponseEntityBuilder.success()
+                .data(recommendRecordService.searchUserEmotionTag(SecurityUtils.getLoginUserAccount()),
+                        this::addEmotionTagListToObjectData)
+                .message("查詢成功")
+                .build();
+    }
+
+    private void addEmotionTagListToObjectData(ObjectData objectData, Integer emotionTag) {
+        objectData.add("emotion_tag", emotionTag);
+        objectData.add("description", EmotionCode.convertToDescription(emotionTag));
     }
 }

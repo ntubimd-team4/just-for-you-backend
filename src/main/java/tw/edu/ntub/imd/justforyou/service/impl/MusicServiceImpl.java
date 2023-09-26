@@ -91,7 +91,7 @@ public class MusicServiceImpl extends BaseServiceImpl<MusicBean, Music, Integer>
                     for (String emotionStr : emotionList) {
                         MusicEmotion musicEmotion = new MusicEmotion();
                         musicEmotion.setMid(music1.getMid());
-                        musicEmotion.setEmotionTag(EmotionCode.of(emotionStr));
+                        musicEmotion.setEmotionTag(EmotionCode.convertToValue(emotionStr));
                         musicEmotionDAO.save(musicEmotion);
                     }
                 } catch (Exception e) {

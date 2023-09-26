@@ -52,10 +52,19 @@ public enum EmotionCode {
         this.description = description;
     }
 
-    public static Integer of(String description) {
+    public static Integer convertToValue(String description) {
         for (EmotionCode emotionCode : EmotionCode.values()) {
             if (emotionCode.getDescription().equals(description)) {
                 return emotionCode.getValue();
+            }
+        }
+        return null;
+    }
+
+    public static String convertToDescription(Integer value) {
+        for (EmotionCode emotionCode : EmotionCode.values()) {
+            if (emotionCode.getValue().equals(value)) {
+                return emotionCode.getDescription();
             }
         }
         return null;
