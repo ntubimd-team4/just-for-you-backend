@@ -1,5 +1,7 @@
 package tw.edu.ntub.imd.justforyou.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -7,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import tw.edu.ntub.imd.justforyou.bean.MusicBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.MusicDAO;
@@ -22,11 +25,16 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MusicServiceImpl extends BaseServiceImpl<MusicBean, Music, Integer> implements MusicService {
     @Value("${server.emotion-token.value}")
     private String emotionToken;
+    @Value("${server.youtube-api-key.value}")
+    private String apiKey;
+
+    private final String apiUrl = "https://www.googleapis.com/youtube/v3/search?key=" + apiKey + "&maxResults=1&part=snippet&q=";
 
     private final MusicDAO musicDAO;
     private final MusicEmotionDAO musicEmotionDAO;
@@ -44,12 +52,29 @@ public class MusicServiceImpl extends BaseServiceImpl<MusicBean, Music, Integer>
         return null;
     }
 
-    @Override
-    public void searchMusic(MultipartFile file) {
-        getSeveralTracks_Sync(file);
+    private String[] searchYoutube(String songName) {
+        String[] result = new String[2];
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = apiUrl + songName;
+        String js = restTemplate.getForObject(url, String.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = objectMapper.readTree(js);
+            JsonNode items = jsonNode.get("items");
+            for (JsonNode item : items) {
+                result[0] = item.get("id").get("videoId").asText();
+                result[1] = item.get("snippet").get("thumbnails").get("high").get("url").asText();
+                return result;
+            }
+        } catch (Exception e) {
+            System.out.println("showYoutubeErrorMsg： " + e.getMessage());
+        }
+        return null;
     }
 
-    public void getSeveralTracks_Sync(MultipartFile file) {
+    @Override
+    public void searchMusic(MultipartFile file) {
         OpenAiService service = new OpenAiService(emotionToken, Duration.ofSeconds(60));
         String emotionText;
         try {
@@ -85,7 +110,8 @@ public class MusicServiceImpl extends BaseServiceImpl<MusicBean, Music, Integer>
 
                     Music music = new Music();
                     music.setSong(musicText.getSong());
-                    music.setLink("http://test");
+                    music.setLink("https://www.youtube.com/watch?v=" + Objects.requireNonNull(searchYoutube(musicText.getSong()))[0]);
+                    music.setThumbnails(Objects.requireNonNull(searchYoutube(musicText.getSong()))[1]);
                     Music music1 = musicDAO.save(music);
 
                     for (String emotionStr : emotionList) {

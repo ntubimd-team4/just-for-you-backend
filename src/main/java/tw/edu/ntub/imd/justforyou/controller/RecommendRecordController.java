@@ -52,6 +52,7 @@ public class RecommendRecordController {
                 (contentData, content) -> {
                     contentData.add("rid", content.getRid());
                     contentData.add("song", content.getSong());
+                    contentData.add("thumbnails", content.getThumbnails());
                     contentData.add("link", content.getLink());
                     contentData.add("emotion_tag", content.getEmotionTag());
                     contentData.add("description", EmotionCode.convertToDescription(content.getEmotionTag()));
@@ -96,7 +97,6 @@ public class RecommendRecordController {
                 .data(arrayData)
                 .build();
     }
-
 
     @Operation(summary = "使用者有的情緒標籤", description = "wireframe pdf第5頁畫面")
     @GetMapping(path = "/emotion-tag")

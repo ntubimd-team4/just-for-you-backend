@@ -67,6 +67,13 @@ public class RecommendRecord {
     @Column(name = "link", nullable = false, length = 55)
     private String link;
     /**
+     * 影片縮圖
+     *
+     * @since 1.0.0
+     */
+    @Column(name = "thumbnails", length = 80)
+    private String thumbnails;
+    /**
      * 情緒標籤（對應codelist表中emotion_tag的value）
      *
      * @since 1.0.0
