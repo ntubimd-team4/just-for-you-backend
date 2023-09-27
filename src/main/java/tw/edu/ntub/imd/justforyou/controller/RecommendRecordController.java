@@ -19,7 +19,6 @@ import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
 
 import java.time.LocalDateTime;
 import java.util.List;
-// TODO 2個API都要再修改，第二層迴圈
 
 @Tag(name = "推薦紀錄 /recommend-record")
 @AllArgsConstructor
@@ -59,7 +58,6 @@ public class RecommendRecordController {
                     contentData.add("isCollection", content.getCollection());
                 });
     }
-
 
     @Operation(summary = "推薦紀錄 - 按標籤類型查詢", description = "wireframe pdf第5頁畫面")
     @GetMapping(path = "/tag")
