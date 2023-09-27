@@ -18,8 +18,13 @@ public interface RecommendRecordDAO extends BaseViewDAO<RecommendRecord, Integer
     @Query("SELECT DISTINCT r.establishTime FROM RecommendRecord r WHERE r.userId = :userId AND r.emotionTag = :emotionTag ORDER BY r.establishTime DESC")
     List<LocalDateTime> findByTag(@Param("userId") String userId, @Param("emotionTag") Integer emotionTag);
 
+    @Query("SELECT DISTINCT r.establishTime FROM RecommendRecord r WHERE r.userId = :userId AND r.song like %:song% ORDER BY r.establishTime DESC")
+    List<LocalDateTime> findByTag(@Param("userId") String userId, @Param("song") String song);
+
     List<RecommendRecord> findByUserIdAndEstablishTimeAndEmotionTag(String userId, LocalDateTime establishTime, Integer emotionTag);
 
     @Query("SELECT r.emotionTag FROM RecommendRecord r WHERE r.userId = :userId GROUP BY r.emotionTag")
     List<Integer> findEmotionTagByUserId(@Param("userId") String userId);
+
+    List<RecommendRecord> findByUserIdAndEstablishTimeAndSongContaining(String userId, LocalDateTime establishTime, String song);
 }

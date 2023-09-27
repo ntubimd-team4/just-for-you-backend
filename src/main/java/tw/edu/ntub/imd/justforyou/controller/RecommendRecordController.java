@@ -54,7 +54,8 @@ public class RecommendRecordController {
                     contentData.add("rid", content.getRid());
                     contentData.add("song", content.getSong());
                     contentData.add("link", content.getLink());
-                    contentData.add("emotionTag", content.getEmotionTag());
+                    contentData.add("emotion_tag", content.getEmotionTag());
+                    contentData.add("description", EmotionCode.convertToDescription(content.getEmotionTag()));
                     contentData.add("isCollection", content.getCollection());
                 });
     }
@@ -79,7 +80,27 @@ public class RecommendRecordController {
                 .build();
     }
 
-    @Operation(summary = "使用者有的情緒標籤")
+    @Operation(summary = "推薦紀錄 - 模糊查詢", description = "wireframe pdf第5頁畫面")
+    @GetMapping(path = "/query")
+    public ResponseEntity<String> querySong(@RequestParam(name = "song") String song) {
+        ArrayData arrayData = new ArrayData();
+        String userId = SecurityUtils.getLoginUserAccount();
+        List<LocalDateTime> recommendRecordBeans = recommendRecordService.searchByUserIdAndSong(userId, song);
+        for (LocalDateTime recommendRecordBean : recommendRecordBeans) {
+            ObjectData objectData = arrayData.addObject();
+            objectData.add("establishTime", recommendRecordBean);
+
+            List<RecommendRecordBean> timeList = recommendRecordService.searchByEstablishTime(userId, recommendRecordBean, song);
+            addMusicListToObjectData(objectData, timeList);
+        }
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(arrayData)
+                .build();
+    }
+
+
+    @Operation(summary = "使用者有的情緒標籤", description = "wireframe pdf第5頁畫面")
     @GetMapping(path = "/emotion-tag")
     public ResponseEntity<String> searchEmotionTag() {
         return ResponseEntityBuilder.success()

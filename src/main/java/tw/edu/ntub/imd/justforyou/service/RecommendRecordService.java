@@ -15,4 +15,8 @@ public interface RecommendRecordService extends BaseViewService<RecommendRecordB
     List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime, Integer tag);
 
     List<Integer> searchUserEmotionTag(String loginUserAccount);
+
+    List<LocalDateTime> searchByUserIdAndSong(String userId, String song);
+
+    List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime, String song);
 }
