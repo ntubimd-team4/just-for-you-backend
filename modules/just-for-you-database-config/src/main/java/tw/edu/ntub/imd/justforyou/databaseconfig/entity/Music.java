@@ -41,6 +41,13 @@ public class Music {
     @Column(name = "link", nullable = false, length = 55)
     private String link;
     /**
+     * 影片縮圖
+     *
+     * @since 1.0.0
+     */
+    @Column(name = "thumbnails", length = 80)
+    private String thumbnails;
+    /**
      * 新增者
      *
      * @since 1.0.0

@@ -24,7 +24,24 @@ public class RecommendRecordServiceImpl extends BaseViewServiceImpl<RecommendRec
 
     @Override
     public List<LocalDateTime> searchByUserId(String userId) {
-        return recommendRecordDAO.findByUserId(userId);
+        return recommendRecordDAO.findByUserIdOrderByEstablishTime(userId);
+    }
+
+    @Override
+    public List<Integer> searchUserEmotionTag(String userId) {
+        return recommendRecordDAO.findEmotionTagByUserId(userId);
+    }
+
+    @Override
+    public List<LocalDateTime> searchByUserIdAndSong(String userId, String song) {
+        return recommendRecordDAO.findByTag(userId, song);
+    }
+
+    @Override
+    public List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime, String song) {
+        return CollectionUtils.map(
+                recommendRecordDAO.findByUserIdAndEstablishTimeAndSongContaining(userId, establishTime, song),
+                recommendRecordTransformer::transferToBean);
     }
 
     @Override

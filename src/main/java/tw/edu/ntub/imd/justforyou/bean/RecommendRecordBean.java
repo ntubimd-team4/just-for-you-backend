@@ -19,6 +19,7 @@ public class RecommendRecordBean {
     private Integer rid;
     private String song;
     private String link;
+    private String thumbnails;
     /**
      * @see tw.edu.ntub.imd.justforyou.databaseconfig.entity.Emotion#emotionTag
      */

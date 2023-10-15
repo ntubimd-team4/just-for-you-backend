@@ -25,7 +25,6 @@ public class MusicController {
         musicService.searchMusic(file);
         return ResponseEntityBuilder.success()
                 .message("成功")
-//                .data()
                 .build();
     }
 }

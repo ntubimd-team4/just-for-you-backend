@@ -108,7 +108,7 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         for (String emotionStr : emotionList) {
             Emotion emotion = new Emotion();
             emotion.setSid(sid);
-            emotion.setEmotionTag(EmotionCode.of(emotionStr));
+            emotion.setEmotionTag(EmotionCode.convertToValue(emotionStr));
             emotionDAO.save(emotion);
         }
         return emotionList;
