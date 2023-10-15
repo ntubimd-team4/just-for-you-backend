@@ -110,8 +110,9 @@ public class MusicServiceImpl extends BaseServiceImpl<MusicBean, Music, Integer>
 
                     Music music = new Music();
                     music.setSong(musicText.getSong());
-                    music.setLink("https://www.youtube.com/watch?v=" + Objects.requireNonNull(searchYoutube(musicText.getSong()))[0]);
-                    music.setThumbnails(Objects.requireNonNull(searchYoutube(musicText.getSong()))[1]);
+                    String[] youtubeData = Objects.requireNonNull(searchYoutube(musicText.getSong()));
+                    music.setLink("https://www.youtube.com/watch?v=" + youtubeData[0]);
+                    music.setThumbnails(youtubeData[1]);
                     Music music1 = musicDAO.save(music);
 
                     for (String emotionStr : emotionList) {
