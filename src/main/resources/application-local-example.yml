@@ -13,6 +13,10 @@ server:
     value: '情緒標籤的Open Ai Key Token'
   topic-token:
     value: '諮商主題的Open Ai Key Token'
+  saying-token:
+    value: '回應情緒的Open Ai Key Token'
+  youtube-api-key:
+    value: 'Youtube API Key'
 logging:
   level:
     sqltiming: DEBUG
