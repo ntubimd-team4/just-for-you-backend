@@ -93,9 +93,9 @@ public class UserAccountController {
     }
 
     @Operation(summary = "人員管理 - 單查")
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<String> getById(@PathVariable(name = "id") String id) {
-        UserAccountBean userAccountBean = userAccountService.getById(id)
+    @GetMapping(path = "/{userId}")
+    public ResponseEntity<String> getById(@PathVariable(name = "userId") String userId) {
+        UserAccountBean userAccountBean = userAccountService.getById(userId)
                 .orElseThrow(() -> new NotFoundException("查無此帳號"));
         ObjectData objectData = new ObjectData();
         addUserAccountListToObjectData(objectData, userAccountBean);
