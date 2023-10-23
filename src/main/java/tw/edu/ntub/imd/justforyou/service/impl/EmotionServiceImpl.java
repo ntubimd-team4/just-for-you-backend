@@ -1,5 +1,8 @@
 package tw.edu.ntub.imd.justforyou.service.impl;
 
+import com.theokanning.openai.completion.CompletionRequest;
+import com.theokanning.openai.service.OpenAiService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tw.edu.ntub.birc.common.util.JavaBeanUtils;
 import tw.edu.ntub.imd.justforyou.bean.EmotionBean;
@@ -11,14 +14,19 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Emotion;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicEmotion;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicRecommend;
+import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
+import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.EmotionService;
 import tw.edu.ntub.imd.justforyou.service.transformer.EmotionTransformer;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, Integer> implements EmotionService {
+    @Value("${server.text-token.value}")
+    private String textToken;
     private final EmotionDAO emotionDAO;
     private final EmotionTransformer emotionTransformer;
     private final MusicDAO musicDAO;
@@ -44,7 +52,7 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
     }
 
     @Override
-    public List<Music> recommendMusic(Integer sid) {
+    public List<MusicEmotion> searchMucic(Integer sid) {
         List<Integer> emotionList = emotionDAO.findBySid(sid);
         List<MusicEmotion> musicEmotionList = musicEmotionDAO.findByEmotionTagIn(emotionList);
         List<MusicEmotion> collect = musicEmotionList.stream().collect(Collectors.collectingAndThen(
@@ -53,9 +61,50 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
                                 MusicEmotion::getMid))), ArrayList::new));
         Collections.shuffle(collect);
         collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 5);
+        return collect;
+    }
 
+    @Override
+    public List<Music> recommendMusic(Integer sid) {
+        List<MusicEmotion> collect = searchMucic(sid);
+        return recommendMusic(sid, collect);
+    }
+
+    @Override
+    public String generateText(List<MusicEmotion> musicEmotionList) {
+        List<String> recommendMusicList = new ArrayList<>();
+        for (MusicEmotion musicEmotion : musicEmotionList) {
+            recommendMusicList.add(EmotionCode.convertToDescription(musicEmotion.getEmotionTag()));
+        }
+        List<String> list = recommendMusicList.stream().distinct().collect(Collectors.toList());
+
+        OpenAiService service = new OpenAiService(textToken, Duration.ofSeconds(60));
+        String text;
+        try {
+            text = service.createCompletion(textRequest(list.toString())).getChoices().get(0).getText();
+        } catch (Exception e) {
+            throw new NotFoundException("請重新發送請求");
+        }
+
+        return text.replace("\n", "");
+    }
+
+    private CompletionRequest textRequest(String prompt) {
+        return CompletionRequest.builder()
+                .model("text-davinci-003")
+                .prompt("生成一句根據" + prompt + "心情的正向激勵話")
+                .temperature(0.5)
+                .maxTokens(2048)
+                .topP(1D)
+                .frequencyPenalty(0D)
+                .presencePenalty(0D)
+                .build();
+    }
+
+    @Override
+    public List<Music> recommendMusic(Integer sid, List<MusicEmotion> musicEmotionList) {
         List<Music> recommendMusicList = new ArrayList<>();
-        for (MusicEmotion musicEmotion : collect) {
+        for (MusicEmotion musicEmotion : musicEmotionList) {
             MusicRecommend musicRecommend = new MusicRecommend();
             musicRecommend.setSid(sid);
             musicRecommend.setMusicEmoId(musicEmotion.getId());
