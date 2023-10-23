@@ -55,6 +55,7 @@ public class SummaryRecordController {
 
 
         ObjectData objectData = new ObjectData();
+        objectData.add("sid", sid);
         objectData.add("value", value);
         addMusicListToObjectData(objectData, musicList);
 
