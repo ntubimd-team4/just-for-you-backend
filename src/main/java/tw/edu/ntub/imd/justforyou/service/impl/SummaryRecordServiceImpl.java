@@ -31,8 +31,6 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     private String emotionToken;
     @Value("${server.topic-token.value}")
     private String topicToken;
-    @Value("${server.saying-token.value}")
-    private String sayingToken;
     private final SummaryRecordDAO summaryRecordDAO;
     private final SummaryRecordTransformer summaryRecordTransformer;
     private final EmotionDAO emotionDAO;
@@ -55,10 +53,8 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     }
 
     @Override
-    public String[] saveSummaryRecord(SummaryRecordBean summaryRecordBean) {
+    public Integer saveSummaryRecord(SummaryRecordBean summaryRecordBean) {
         String id = SecurityUtils.getLoginUserAccount();
-
-        String[] summaryResult = new String[2];
 
         OpenAiService service = new OpenAiService(summaryToken, Duration.ofSeconds(60));
         String summaryRecordText;
@@ -68,23 +64,20 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         } catch (Exception e) {
             throw new NotFoundException("請重新發送請求");
         }
-        String summary = summaryRecordText.replace("\n", "");
         SummaryRecord summaryRecord = summaryRecordTransformer.transferToEntity(summaryRecordBean);
         summaryRecord.setUserId(id);
         summaryRecord.setContent(summaryRecordBean.getPrompt());
-        summaryRecord.setSummary(summary);
+        summaryRecord.setSummary(summaryRecordText.replace("\n", ""));
         summaryRecord.setUserId(SecurityUtils.getLoginUserAccount());
         summaryRecordDAO.save(summaryRecord);
 
-        summaryResult[0] = String.valueOf(summaryRecord.getSid());
-        summaryResult[1] = summary;
-        return summaryResult;
+        return summaryRecord.getSid();
     }
 
     private CompletionRequest summaryRecordRequest(String prompt) {
         return CompletionRequest.builder()
                 .model("text-davinci-003")
-                .prompt(prompt + "\n若不理解或不明白這句話請回應無，否則請針對這句話以第一人稱進行簡單摘要")
+                .prompt(prompt + "請針對這句話以第一人稱進行簡單摘要")
                 .temperature(0.5)
                 .maxTokens(2048)
                 .topP(1D)
@@ -125,7 +118,7 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         String mood = "平靜、快樂、狂喜、友愛、接受、信任、崇敬、屈服、擔心、恐懼、驚悚、敬畏、不解、驚訝、驚愕、反對、傷感、悲傷、悲痛、懊悔、厭倦、厭惡、憎恨、鄙夷、不耐煩、生氣、暴怒、挑釁、關心、期待、警惕、樂觀";
         return CompletionRequest.builder()
                 .model("text-davinci-003")
-                .prompt(prompt + "\n若不理解或不明白這句話請回應無，否則請從以下 " + mood + " 這幾個情緒中判斷出這句話主要呈現哪5種情緒")
+                .prompt(prompt + "\n請從以下 " + mood + " 這幾個情緒中判斷出這句話主要呈現哪5種情緒")
                 .temperature(0.5)
                 .maxTokens(2048)
                 .topP(1D)

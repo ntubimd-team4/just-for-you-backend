@@ -33,15 +33,7 @@ public class SummaryRecordController {
     @PostMapping(path = "")
     public ResponseEntity<String> openAi(@RequestBody SummaryRecordBean summaryRecordBean) {
         String prompt = summaryRecordBean.getPrompt();
-        String[] summaryRecords = summaryRecordService.saveSummaryRecord(summaryRecordBean);
-
-        if (summaryRecords[1].contains("無")) {
-            return ResponseEntityBuilder.error()
-                    .message(":)")
-                    .build();
-        }
-
-        Integer sid = Integer.parseInt(summaryRecords[0]);
+        Integer sid = summaryRecordService.saveSummaryRecord(summaryRecordBean);
         List<String> emotionList = summaryRecordService.saveEmotion(sid, prompt);
         summaryRecordService.saveTopic(sid, prompt);
 

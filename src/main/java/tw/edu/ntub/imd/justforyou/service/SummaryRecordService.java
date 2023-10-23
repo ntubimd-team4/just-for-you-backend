@@ -1,11 +1,12 @@
 package tw.edu.ntub.imd.justforyou.service;
 
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.SummaryRecord;
 
 import java.util.List;
 
 public interface SummaryRecordService extends BaseService<SummaryRecordBean, Integer> {
-    String[] saveSummaryRecord(SummaryRecordBean summaryRecordBean);
+    Integer saveSummaryRecord(SummaryRecordBean summaryRecordBean);
 
     List<String> saveEmotion(Integer sid, String prompt);
 
