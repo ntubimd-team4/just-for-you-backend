@@ -65,12 +65,6 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
     }
 
     @Override
-    public List<Music> recommendMusic(Integer sid) {
-        List<MusicEmotion> collect = searchMucic(sid);
-        return recommendMusic(sid, collect);
-    }
-
-    @Override
     public String generateText(List<MusicEmotion> musicEmotionList) {
         List<String> recommendMusicList = new ArrayList<>();
         for (MusicEmotion musicEmotion : musicEmotionList) {

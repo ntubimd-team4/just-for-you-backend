@@ -9,6 +9,7 @@ import tw.edu.ntub.imd.justforyou.bean.ConsultationRecordBean;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicEmotion;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.*;
 import tw.edu.ntub.imd.justforyou.util.data.SymbolUtils;
@@ -51,11 +52,14 @@ public class SummaryRecordController {
 //        }
 
         String value = SymbolUtils.remoteSymbol(emotionList);
-        List<Music> musicList = emotionService.recommendMusic(sid);
+        List<MusicEmotion> musicEmotionList = emotionService.searchMucic(sid);
+        List<Music> musicList = emotionService.recommendMusic(sid, musicEmotionList);
+        String text = emotionService.generateText(musicEmotionList);
 
 
         ObjectData objectData = new ObjectData();
         objectData.add("sid", sid);
+        objectData.add("text", text);
         objectData.add("value", value);
         addMusicListToObjectData(objectData, musicList);
 

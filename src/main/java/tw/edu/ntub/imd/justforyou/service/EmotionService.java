@@ -7,8 +7,6 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicEmotion;
 import java.util.List;
 
 public interface EmotionService extends BaseService<EmotionBean, Integer> {
-    List<Music> recommendMusic(Integer sid);
-
     List<Music> recommendMusic(Integer sid, List<MusicEmotion> musicEmotionList);
 
     List<MusicEmotion> searchMucic(Integer sid);
