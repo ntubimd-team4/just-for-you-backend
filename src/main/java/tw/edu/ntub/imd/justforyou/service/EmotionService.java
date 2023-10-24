@@ -12,4 +12,6 @@ public interface EmotionService extends BaseService<EmotionBean, Integer> {
     List<MusicEmotion> searchMucic(Integer sid);
 
     String generateText(List<MusicEmotion> musicEmotionList);
+
+    String searchBySid(Integer sid);
 }
