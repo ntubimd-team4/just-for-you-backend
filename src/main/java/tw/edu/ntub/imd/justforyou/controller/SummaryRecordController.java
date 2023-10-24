@@ -169,4 +169,13 @@ public class SummaryRecordController {
     private String addEmotionToObjectData(Integer sid) {
         return emotionService.searchBySid(sid);
     }
+
+    @Operation(summary = "分配學生給諮商師")
+    @PatchMapping(path = "")
+    public ResponseEntity<String> updateTeacher(@RequestBody SummaryRecordBean summaryRecordBean) {
+        summaryRecordService.update(summaryRecordBean.getSid(), summaryRecordBean);
+        return ResponseEntityBuilder.success()
+                .message("分配成功")
+                .build();
+    }
 }
