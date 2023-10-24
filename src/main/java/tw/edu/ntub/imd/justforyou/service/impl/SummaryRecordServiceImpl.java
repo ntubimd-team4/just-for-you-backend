@@ -31,6 +31,8 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     private String emotionToken;
     @Value("${server.topic-token.value}")
     private String topicToken;
+    @Value("${server.level-token.value}")
+    private String levelToken;
     private final SummaryRecordDAO summaryRecordDAO;
     private final SummaryRecordTransformer summaryRecordTransformer;
     private final EmotionDAO emotionDAO;
@@ -69,6 +71,7 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         summaryRecord.setContent(summaryRecordBean.getPrompt());
         summaryRecord.setSummary(summaryRecordText.replace("\n", ""));
         summaryRecord.setUserId(SecurityUtils.getLoginUserAccount());
+        summaryRecord.setLevel(getLevel(summaryRecordBean.getPrompt()));
         summaryRecordDAO.save(summaryRecord);
 
         return summaryRecord.getSid();
@@ -78,6 +81,46 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         return CompletionRequest.builder()
                 .model("text-davinci-003")
                 .prompt(prompt + "請針對這句話以第一人稱進行簡單摘要")
+                .temperature(0.5)
+                .maxTokens(2048)
+                .topP(1D)
+                .frequencyPenalty(0D)
+                .presencePenalty(0D)
+                .build();
+    }
+
+    private Integer getLevel(String prompt) {
+        OpenAiService levelService = new OpenAiService(levelToken, Duration.ofSeconds(60));
+        String level;
+
+        try {
+            level = levelService.createCompletion(levelRequest(prompt)).getChoices().get(0).getText();
+            System.out.println("jfoewjfoe  " + level);
+        } catch (Exception e) {
+            throw new NotFoundException("請重新發送請求");
+        }
+
+        if (level.contains("一級")) {
+            return 1;
+        } else if (level.contains("二級")) {
+            return 2;
+        } else if (level.contains("三級")) {
+            return 3;
+        } else if (level.contains("四級")) {
+            return 4;
+        } else {
+            return 0;
+        }
+    }
+
+    private CompletionRequest levelRequest(String prompt) {
+        return CompletionRequest.builder()
+                .model("text-davinci-003")
+                .prompt("請依照以下標準判斷出「" + prompt + "」這句話屬於哪一級別\n" +
+                        "一級:無自殺企圖\n" +
+                        "二級:持續有自殺、不想活之意念\n" +
+                        "三級:已嚴重威脅要自殺、不想活, 但無立即危險\n" +
+                        "四級:有強烈之自殺行動、自殺計畫、偏激或立即有危險")
                 .temperature(0.5)
                 .maxTokens(2048)
                 .topP(1D)
@@ -126,7 +169,6 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
                 .presencePenalty(0D)
                 .build();
     }
-
 
     @Override
     public void saveTopic(Integer sid, String prompt) {
