@@ -17,4 +17,6 @@ public interface UserAccountService extends BaseService<UserAccountBean, String>
     int getKeywordListTotalPage(String userId, String userName, String department, int count);
 
     void updateAvailable(String userId);
+
+    List<UserAccountBean> searchByTeacher();
 }

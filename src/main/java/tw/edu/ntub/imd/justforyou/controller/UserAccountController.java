@@ -163,4 +163,19 @@ public class UserAccountController {
         objectData.add("userId", userId);
         objectData.add("userName", userAccountService.getById(userId).get().getUserName());
     }
+
+    @Operation(summary = "老師列表(查詢個案管理師跟諮商師帳號)")
+    @GetMapping(path = "/teacher")
+    public ResponseEntity<String> searchTeacherList() {
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(userAccountService.searchByTeacher(), this::addTeacherObject)
+                .build();
+    }
+
+    private void addTeacherObject(ObjectData objectData, UserAccountBean userAccountBean) {
+        String userId = userAccountBean.getUserId();
+        objectData.add("userId", userId);
+        objectData.add("userName", userAccountService.getById(userId).get().getUserName());
+    }
 }
