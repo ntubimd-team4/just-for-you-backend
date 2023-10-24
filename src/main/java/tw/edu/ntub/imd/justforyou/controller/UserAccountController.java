@@ -9,6 +9,7 @@ import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dto.Pager;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
+import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
 import tw.edu.ntub.imd.justforyou.service.UserAccountService;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
@@ -20,6 +21,7 @@ import tw.edu.ntub.imd.justforyou.util.json.object.SingleValueObjectData;
 @RequestMapping(path = "/user-account")
 public class UserAccountController {
     private final UserAccountService userAccountService;
+    private final SummaryRecordService summaryRecordService;
 
     @Operation(summary = "權限查詢")
     @GetMapping(path = "/role")
@@ -145,5 +147,20 @@ public class UserAccountController {
         return ResponseEntityBuilder.success()
                 .message("修改成功")
                 .build();
+    }
+
+    @Operation(summary = "學生列表 - 查詢自己負責的學生")
+    @GetMapping(path = "/student")
+    public ResponseEntity<String> searchStudentList() {
+        String id = SecurityUtils.getLoginUserAccount();
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(summaryRecordService.searchByTeacher(id), this::addStudentObject)
+                .build();
+    }
+
+    private void addStudentObject(ObjectData objectData, String userId) {
+        objectData.add("userId", userId);
+        objectData.add("userName", userAccountService.getById(userId).get().getUserName());
     }
 }
