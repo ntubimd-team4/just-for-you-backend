@@ -160,8 +160,11 @@ public class UserAccountController {
     }
 
     private void addStudentObject(ObjectData objectData, String userId) {
+        UserAccountBean userAccountBean = userAccountService.getById(userId).get();
         objectData.add("userId", userId);
-        objectData.add("userName", userAccountService.getById(userId).get().getUserName());
+        objectData.add("userName", userAccountBean.getUserName());
+        objectData.add("userSex", userAccountBean.getUserSex() == null ? null : !userAccountBean.getUserSex() ? "男" : "女");
+        objectData.add("department", userAccountBean.getDepartment());
     }
 
     @Operation(summary = "老師列表(查詢個案管理師跟諮商師帳號)")

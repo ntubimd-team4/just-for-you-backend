@@ -21,6 +21,7 @@ import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Tag(name = "摘要相關 /summary-record")
 @AllArgsConstructor
@@ -80,6 +81,7 @@ public class SummaryRecordController {
                     contentData.add("mid", content.getMid());
                     contentData.add("song", content.getSong());
                     contentData.add("link", content.getLink());
+                    contentData.add("thumbnails", content.getThumbnails());
                 });
     }
 
@@ -157,11 +159,14 @@ public class SummaryRecordController {
     }
 
     private void addAllSummaryObject(ObjectData objectData, SummaryRecordBean summaryRecordBean) {
+        String teacher = summaryRecordBean.getTeacher();
+        Optional<UserAccountBean> userAccountBean = userAccountService.getById(teacher);
         objectData.add("sid", summaryRecordBean.getSid());
         objectData.add("userId", summaryRecordBean.getUserId());
         objectData.add("summary", EncryptionUtils.decryptText(summaryRecordBean.getSummary()));
         objectData.add("establishTime", summaryRecordBean.getEstablishTime());
-        objectData.add("teacher", summaryRecordBean.getTeacher());
+        objectData.add("teacher", teacher);
+        objectData.add("userName", userAccountBean.map(UserAccountBean::getUserName).orElse(null));
         objectData.add("level", Objects.requireNonNull(Level.of(summaryRecordBean.getLevel())).getLevelName());
         objectData.add("topic", addTopicToObjectData(summaryRecordBean.getSid()));
         objectData.add("emotion", addEmotionToObjectData(summaryRecordBean.getSid()));
