@@ -11,6 +11,8 @@ public class SummaryRecordBean {
     private String content;
     private String summary;
     private LocalDateTime establishTime;
+    private String teacher;
+    private Integer level;
     private String createId;
     private LocalDateTime createTime;
     private String modifyId;

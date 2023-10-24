@@ -152,6 +152,11 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
     }
 
     @Override
+    public List<UserAccountBean> searchByTeacher() {
+        return CollectionUtils.map(userAccountDAO.findByTeacher(), transformer::transferToBean);
+    }
+
+    @Override
     public int getKeywordListTotalPage(String userId, String userName, String department, int count) {
         return userAccountDAO.findAll(specification.checkBlank(userId, userName, department),
                 PageRequest.of(0, count)).getTotalPages();

@@ -18,6 +18,7 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.EmotionService;
 import tw.edu.ntub.imd.justforyou.service.transformer.EmotionTransformer;
+import tw.edu.ntub.imd.justforyou.util.data.SymbolUtils;
 
 import java.time.Duration;
 import java.util.*;
@@ -62,6 +63,16 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
         Collections.shuffle(collect);
         collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 5);
         return collect;
+    }
+
+    @Override
+    public String searchBySid(Integer sid) {
+        List<Integer> emotionList = emotionDAO.findBySid(sid);
+        List<String> list = new ArrayList<>();
+        for (Integer emotion : emotionList) {
+            list.add(EmotionCode.convertToDescription(emotion));
+        }
+        return SymbolUtils.remoteSymbol(list);
     }
 
     @Override

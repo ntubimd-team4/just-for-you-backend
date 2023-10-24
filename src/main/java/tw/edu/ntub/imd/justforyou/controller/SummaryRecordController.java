@@ -10,14 +10,17 @@ import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicEmotion;
+import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Level;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.*;
 import tw.edu.ntub.imd.justforyou.util.data.SymbolUtils;
+import tw.edu.ntub.imd.justforyou.util.encryption.EncryptionUtils;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 import tw.edu.ntub.imd.justforyou.util.json.object.CollectionObjectData;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
 
 import java.util.List;
+import java.util.Objects;
 
 @Tag(name = "摘要相關 /summary-record")
 @AllArgsConstructor
@@ -108,8 +111,8 @@ public class SummaryRecordController {
 
     private void addSummaryObject(ObjectData objectData, SummaryRecordBean summaryRecordBean) {
         objectData.add("sid", summaryRecordBean.getSid());
-        objectData.add("content", summaryRecordBean.getContent());
-        objectData.add("summary", summaryRecordBean.getSummary());
+        objectData.add("content", EncryptionUtils.decryptText(summaryRecordBean.getContent()));
+        objectData.add("summary", EncryptionUtils.decryptText(summaryRecordBean.getSummary()));
         objectData.add("establishTime", summaryRecordBean.getEstablishTime());
         objectData.add("topic", addTopicToObjectData(summaryRecordBean.getSid()));
     }
@@ -138,9 +141,42 @@ public class SummaryRecordController {
         data.add("consultationRecordList", list,
                 (contentData, content) -> {
                     contentData.add("cid", content.getCid());
-                    contentData.add("content", content.getContent());
+                    contentData.add("content", EncryptionUtils.decryptText(content.getContent()));
                     contentData.add("createId", content.getCreateId());
                     contentData.add("createTime", content.getCreateTime());
                 });
+    }
+
+    @Operation(summary = "全部摘要紀錄", description = "個案管理師分配頁")
+    @GetMapping(path = "/list")
+    public ResponseEntity<String> searchAllSummaryRecord() {
+        return ResponseEntityBuilder.success()
+                .message("查詢成功")
+                .data(summaryRecordService.searchAll(), this::addAllSummaryObject)
+                .build();
+    }
+
+    private void addAllSummaryObject(ObjectData objectData, SummaryRecordBean summaryRecordBean) {
+        objectData.add("sid", summaryRecordBean.getSid());
+        objectData.add("userId", summaryRecordBean.getUserId());
+        objectData.add("summary", EncryptionUtils.decryptText(summaryRecordBean.getSummary()));
+        objectData.add("establishTime", summaryRecordBean.getEstablishTime());
+        objectData.add("teacher", summaryRecordBean.getTeacher());
+        objectData.add("level", Objects.requireNonNull(Level.of(summaryRecordBean.getLevel())).getLevelName());
+        objectData.add("topic", addTopicToObjectData(summaryRecordBean.getSid()));
+        objectData.add("emotion", addEmotionToObjectData(summaryRecordBean.getSid()));
+    }
+
+    private String addEmotionToObjectData(Integer sid) {
+        return emotionService.searchBySid(sid);
+    }
+
+    @Operation(summary = "分配學生給諮商師")
+    @PatchMapping(path = "")
+    public ResponseEntity<String> updateTeacher(@RequestBody SummaryRecordBean summaryRecordBean) {
+        summaryRecordService.update(summaryRecordBean.getSid(), summaryRecordBean);
+        return ResponseEntityBuilder.success()
+                .message("分配成功")
+                .build();
     }
 }

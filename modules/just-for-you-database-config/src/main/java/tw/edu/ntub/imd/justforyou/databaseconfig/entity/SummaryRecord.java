@@ -55,6 +55,21 @@ public class SummaryRecord {
     @Column(name = "establish_time", nullable = false)
     private LocalDateTime establishTime;
     /**
+     * 負責此個案的諮商師
+     *
+     * @since 1.0.0
+     */
+    @Column(name = "teacher", length = 45)
+    private String teacher;
+    /**
+     * 摘要分級(1~4級，數字越大越嚴重)
+     * 對應codelist表中level的value
+     *
+     * @since 1.0.0
+     */
+    @Column(name = "level", nullable = false)
+    private Integer level;
+    /**
      * 新增者
      *
      * @since 1.0.0
