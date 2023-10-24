@@ -204,7 +204,8 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
 
     @Override
     public List<SummaryRecordBean> searchSummaryRecordList(String userId) {
-        return CollectionUtils.map(summaryRecordDAO.findByUserIdOrderByEstablishTimeDesc(userId),
+        String teacher = SecurityUtils.getLoginUserAccount();
+        return CollectionUtils.map(summaryRecordDAO.findByUserIdAndTeacherOrderByEstablishTimeDesc(userId, teacher),
                 summaryRecordTransformer::transferToBean);
     }
 
