@@ -18,6 +18,7 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.TopicCode;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
 import tw.edu.ntub.imd.justforyou.service.transformer.SummaryRecordTransformer;
+import tw.edu.ntub.imd.justforyou.util.encryption.EncryptionUtils;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -68,8 +69,8 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         }
         SummaryRecord summaryRecord = summaryRecordTransformer.transferToEntity(summaryRecordBean);
         summaryRecord.setUserId(id);
-        summaryRecord.setContent(summaryRecordBean.getPrompt());
-        summaryRecord.setSummary(summaryRecordText.replace("\n", ""));
+        summaryRecord.setContent(EncryptionUtils.cryptText(summaryRecordBean.getPrompt()));
+        summaryRecord.setSummary(EncryptionUtils.cryptText(summaryRecordText.replace("\n", "")));
         summaryRecord.setUserId(SecurityUtils.getLoginUserAccount());
         summaryRecord.setLevel(getLevel(summaryRecordBean.getPrompt()));
         summaryRecordDAO.save(summaryRecord);
@@ -95,7 +96,6 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
 
         try {
             level = levelService.createCompletion(levelRequest(prompt)).getChoices().get(0).getText();
-            System.out.println("jfoewjfoe  " + level);
         } catch (Exception e) {
             throw new NotFoundException("請重新發送請求");
         }

@@ -14,6 +14,7 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Level;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.*;
 import tw.edu.ntub.imd.justforyou.util.data.SymbolUtils;
+import tw.edu.ntub.imd.justforyou.util.encryption.EncryptionUtils;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
 import tw.edu.ntub.imd.justforyou.util.json.object.CollectionObjectData;
 import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
@@ -110,8 +111,8 @@ public class SummaryRecordController {
 
     private void addSummaryObject(ObjectData objectData, SummaryRecordBean summaryRecordBean) {
         objectData.add("sid", summaryRecordBean.getSid());
-        objectData.add("content", summaryRecordBean.getContent());
-        objectData.add("summary", summaryRecordBean.getSummary());
+        objectData.add("content", EncryptionUtils.decryptText(summaryRecordBean.getContent()));
+        objectData.add("summary", EncryptionUtils.decryptText(summaryRecordBean.getSummary()));
         objectData.add("establishTime", summaryRecordBean.getEstablishTime());
         objectData.add("topic", addTopicToObjectData(summaryRecordBean.getSid()));
     }
@@ -140,7 +141,7 @@ public class SummaryRecordController {
         data.add("consultationRecordList", list,
                 (contentData, content) -> {
                     contentData.add("cid", content.getCid());
-                    contentData.add("content", content.getContent());
+                    contentData.add("content", EncryptionUtils.decryptText(content.getContent()));
                     contentData.add("createId", content.getCreateId());
                     contentData.add("createTime", content.getCreateTime());
                 });
@@ -158,7 +159,7 @@ public class SummaryRecordController {
     private void addAllSummaryObject(ObjectData objectData, SummaryRecordBean summaryRecordBean) {
         objectData.add("sid", summaryRecordBean.getSid());
         objectData.add("userId", summaryRecordBean.getUserId());
-        objectData.add("summary", summaryRecordBean.getSummary());
+        objectData.add("summary", EncryptionUtils.decryptText(summaryRecordBean.getSummary()));
         objectData.add("establishTime", summaryRecordBean.getEstablishTime());
         objectData.add("teacher", summaryRecordBean.getTeacher());
         objectData.add("level", Objects.requireNonNull(Level.of(summaryRecordBean.getLevel())).getLevelName());
