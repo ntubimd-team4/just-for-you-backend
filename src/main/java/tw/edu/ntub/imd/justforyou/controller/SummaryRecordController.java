@@ -21,7 +21,6 @@ import tw.edu.ntub.imd.justforyou.util.json.object.ObjectData;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Tag(name = "摘要相關 /summary-record")
 @AllArgsConstructor
@@ -131,22 +130,18 @@ public class SummaryRecordController {
                 .orElseThrow(() -> new NotFoundException("查無此摘要，請確認是否正確"));
         addUserAccountToObjectData(summaryRecordBean.getUserId(), objectData);
         addSummaryObject(objectData, summaryRecordBean);
-        addConsultationListToObjectData(objectData, consultationRecordService.searchBySid(summaryRecordBean.getSid()));
+        addConsultationListToObjectData(objectData, consultationRecordService.getBySid(summaryRecordBean.getSid()));
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
                 .data(objectData)
                 .build();
     }
 
-    private void addConsultationListToObjectData(ObjectData objectData, List<ConsultationRecordBean> list) {
-        CollectionObjectData data = objectData.createCollectionData();
-        data.add("consultationRecordList", list,
-                (contentData, content) -> {
-                    contentData.add("cid", content.getCid());
-                    contentData.add("content", EncryptionUtils.decryptText(content.getContent()));
-                    contentData.add("createId", content.getCreateId());
-                    contentData.add("createTime", content.getCreateTime());
-                });
+    private void addConsultationListToObjectData(ObjectData objectData, ConsultationRecordBean consultationRecordBean) {
+        objectData.add("cid", consultationRecordBean.getCid());
+        objectData.add("consultationContent", EncryptionUtils.decryptText(consultationRecordBean.getContent()));
+        objectData.add("createId", consultationRecordBean.getCreateId());
+        objectData.add("createTime", consultationRecordBean.getCreateTime());
     }
 
     @Operation(summary = "全部摘要紀錄", description = "個案管理師分配頁")
