@@ -139,7 +139,6 @@ public class SummaryRecordController {
     }
 
     private void addConsultationListToObjectData(ObjectData objectData, ConsultationRecordBean consultationRecordBean) {
-        objectData.add("cid", consultationRecordBean.getCid());
         objectData.add("consultationContent", EncryptionUtils.decryptText(consultationRecordBean.getContent()));
         objectData.add("createId", consultationRecordBean.getCreateId());
         objectData.add("createTime", consultationRecordBean.getCreateTime());
