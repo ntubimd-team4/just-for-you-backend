@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tw.edu.ntub.birc.common.util.StringUtils;
 import tw.edu.ntub.imd.justforyou.bean.ConsultationRecordBean;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
@@ -154,14 +155,13 @@ public class SummaryRecordController {
     }
 
     private void addAllSummaryObject(ObjectData objectData, SummaryRecordBean summaryRecordBean) {
-        String teacher = summaryRecordBean.getTeacher();
-        Optional<UserAccountBean> userAccountBean = userAccountService.getById(teacher);
         objectData.add("sid", summaryRecordBean.getSid());
         objectData.add("userId", summaryRecordBean.getUserId());
+        objectData.add("userName", userAccountService.getById(summaryRecordBean.getUserId()).get().getUserName());
         objectData.add("summary", EncryptionUtils.decryptText(summaryRecordBean.getSummary()));
         objectData.add("establishTime", summaryRecordBean.getEstablishTime());
-        objectData.add("teacher", teacher);
-        objectData.add("userName", userAccountBean.map(UserAccountBean::getUserName).orElse(null));
+        objectData.add("teacher", StringUtils.isNotBlank(summaryRecordBean.getTeacher()) ?
+                userAccountService.getById(summaryRecordBean.getTeacher()).get().getUserName() : null);
         objectData.add("level", Objects.requireNonNull(Level.of(summaryRecordBean.getLevel())).getLevelName());
         objectData.add("topic", addTopicToObjectData(summaryRecordBean.getSid()));
         objectData.add("emotion", addEmotionToObjectData(summaryRecordBean.getSid()));
