@@ -115,7 +115,7 @@ public class SummaryRecordController {
         objectData.add("sid", summaryRecordBean.getSid());
         objectData.add("content", EncryptionUtils.decryptText(summaryRecordBean.getContent()));
         objectData.add("summary", EncryptionUtils.decryptText(summaryRecordBean.getSummary()));
-        objectData.add("establishTime", summaryRecordBean.getEstablishTime());
+        objectData.add("establishTime", summaryRecordBean.getEstablishTime().toString().substring(0, 16).replace("T", " "));
         objectData.add("topic", addTopicToObjectData(summaryRecordBean.getSid()));
     }
 
@@ -158,7 +158,7 @@ public class SummaryRecordController {
         objectData.add("userId", summaryRecordBean.getUserId());
         objectData.add("userName", userAccountService.getById(summaryRecordBean.getUserId()).get().getUserName());
         objectData.add("summary", EncryptionUtils.decryptText(summaryRecordBean.getSummary()));
-        objectData.add("establishTime", summaryRecordBean.getEstablishTime());
+        objectData.add("establishTime", summaryRecordBean.getEstablishTime().toString().substring(0, 16).replace("T", " "));
         objectData.add("teacher", StringUtils.isNotBlank(summaryRecordBean.getTeacher()) ?
                 userAccountService.getById(summaryRecordBean.getTeacher()).get().getUserName() : null);
         objectData.add("level", Objects.requireNonNull(Level.of(summaryRecordBean.getLevel())).getLevelName());

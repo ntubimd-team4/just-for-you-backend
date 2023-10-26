@@ -35,7 +35,7 @@ public class RecommendRecordController {
         List<LocalDateTime> recommendRecordBeans = recommendRecordService.searchByUserId(userId);
         for (LocalDateTime recommendRecordBean : recommendRecordBeans) {
             ObjectData objectData = arrayData.addObject();
-            objectData.add("establishTime", recommendRecordBean);
+            objectData.add("establishTime", recommendRecordBean.toString().substring(0, 16).replace("T", " "));
 
             List<RecommendRecordBean> timeList = recommendRecordService.searchByEstablishTime(userId, recommendRecordBean);
             addMusicListToObjectData(objectData, timeList);
@@ -68,7 +68,7 @@ public class RecommendRecordController {
         List<LocalDateTime> recommendRecordBeans = recommendRecordService.searchByUserIdAndEmotionTag(userId, tag);
         for (LocalDateTime recommendRecordBean : recommendRecordBeans) {
             ObjectData objectData = arrayData.addObject();
-            objectData.add("establishTime", recommendRecordBean);
+            objectData.add("establishTime", recommendRecordBean.toString().substring(0, 16).replace("T", " "));
 
             List<RecommendRecordBean> timeList = recommendRecordService.searchByEstablishTime(userId, recommendRecordBean, tag);
             addMusicListToObjectData(objectData, timeList);
@@ -87,7 +87,7 @@ public class RecommendRecordController {
         List<LocalDateTime> recommendRecordBeans = recommendRecordService.searchByUserIdAndSong(userId, song);
         for (LocalDateTime recommendRecordBean : recommendRecordBeans) {
             ObjectData objectData = arrayData.addObject();
-            objectData.add("establishTime", recommendRecordBean);
+            objectData.add("establishTime", recommendRecordBean.toString().substring(0, 16).replace("T", " "));
 
             List<RecommendRecordBean> timeList = recommendRecordService.searchByEstablishTime(userId, recommendRecordBean, song);
             addMusicListToObjectData(objectData, timeList);
