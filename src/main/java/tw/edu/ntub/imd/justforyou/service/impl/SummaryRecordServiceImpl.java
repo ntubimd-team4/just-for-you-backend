@@ -3,23 +3,29 @@ package tw.edu.ntub.imd.justforyou.service.impl;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import tw.edu.ntub.birc.common.exception.UnknownException;
 import tw.edu.ntub.birc.common.util.CollectionUtils;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.EmotionDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.SummaryRecordDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.TopicDAO;
+import tw.edu.ntub.imd.justforyou.databaseconfig.dao.UserAccountDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Emotion;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.SummaryRecord;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Topic;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
+import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Role;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.TopicCode;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
 import tw.edu.ntub.imd.justforyou.service.transformer.SummaryRecordTransformer;
 import tw.edu.ntub.imd.justforyou.util.encryption.EncryptionUtils;
 
+import javax.mail.MessagingException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +43,23 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     private final SummaryRecordDAO summaryRecordDAO;
     private final SummaryRecordTransformer summaryRecordTransformer;
     private final EmotionDAO emotionDAO;
+    private final UserAccountDAO userAccountDAO;
     private final TopicDAO topicDAO;
+    private final JavaMailSender mailSender;
 
     public SummaryRecordServiceImpl(SummaryRecordDAO summaryRecordDAO,
                                     SummaryRecordTransformer summaryRecordTransformer,
                                     EmotionDAO emotionDAO,
-                                    TopicDAO topicDAO) {
+                                    UserAccountDAO userAccountDAO,
+                                    TopicDAO topicDAO,
+                                    JavaMailSender mailSender) {
         super(summaryRecordDAO, summaryRecordTransformer);
         this.summaryRecordDAO = summaryRecordDAO;
         this.summaryRecordTransformer = summaryRecordTransformer;
         this.emotionDAO = emotionDAO;
+        this.userAccountDAO = userAccountDAO;
         this.topicDAO = topicDAO;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -101,12 +113,16 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         }
 
         if (level.contains("一級")) {
+            sendMail(prompt);
             return 1;
         } else if (level.contains("二級")) {
+            sendMail(prompt);
             return 2;
         } else if (level.contains("三級")) {
+            sendMail(prompt);
             return 3;
         } else if (level.contains("四級")) {
+            sendMail(prompt);
             return 4;
         } else {
             return 0;
@@ -127,6 +143,22 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
                 .frequencyPenalty(0D)
                 .presencePenalty(0D)
                 .build();
+    }
+
+    private void sendMail(String prompt) {
+        List<String> userAccounts = userAccountDAO.findByCaseManagement();
+        System.out.println("fwoefjioew  " + userAccounts);
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
+            mimeMessageHelper.setFrom("諮屬於你 <ntubimd112404@gmail.com>");
+            mimeMessageHelper.setTo("10946012@ntub.edu.tw");
+            mimeMessageHelper.setSubject("緊急！有四級通知！");
+            mimeMessageHelper.setText(
+                    "個案管理師您好：\n目前有同學輸入的心情小語被判定為四級狀態，該同學所輸入的心情為：\n\n" + prompt + "\n\n請立即查看並確認。");
+            mailSender.send(mimeMessageHelper.getMimeMessage());
+        } catch (MessagingException e) {
+            throw new UnknownException(e);
+        }
     }
 
     @Override

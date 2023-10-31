@@ -11,4 +11,7 @@ import java.util.List;
 public interface UserAccountDAO extends BaseDAO<UserAccount, String>, JpaSpecificationExecutor<UserAccount> {
     @Query("FROM UserAccount u WHERE u.role = 0 OR u.role = 1")
     List<UserAccount> findByTeacher();
+
+    @Query("SELECT u.userId FROM UserAccount u WHERE u.role = 0")
+    List<String> findByCaseManagement();
 }
