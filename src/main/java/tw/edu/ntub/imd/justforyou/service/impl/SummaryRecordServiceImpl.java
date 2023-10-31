@@ -18,7 +18,6 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Emotion;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.SummaryRecord;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Topic;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
-import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Role;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.TopicCode;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
@@ -113,13 +112,10 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         }
 
         if (level.contains("一級")) {
-            sendMail(prompt);
             return 1;
         } else if (level.contains("二級")) {
-            sendMail(prompt);
             return 2;
         } else if (level.contains("三級")) {
-            sendMail(prompt);
             return 3;
         } else if (level.contains("四級")) {
             sendMail(prompt);
@@ -146,15 +142,18 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     }
 
     private void sendMail(String prompt) {
-        List<String> userAccounts = userAccountDAO.findByCaseManagement();
-        System.out.println("fwoefjioew  " + userAccounts);
+        String[] userAccounts = userAccountDAO.findByCaseManagement();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
             mimeMessageHelper.setFrom("諮屬於你 <ntubimd112404@gmail.com>");
-            mimeMessageHelper.setTo("10946012@ntub.edu.tw");
+            mimeMessageHelper.setBcc(userAccounts);
             mimeMessageHelper.setSubject("緊急！有四級通知！");
-            mimeMessageHelper.setText(
-                    "個案管理師您好：\n目前有同學輸入的心情小語被判定為四級狀態，該同學所輸入的心情為：\n\n" + prompt + "\n\n請立即查看並確認。");
+            mimeMessageHelper.setText("<html><head></head><body>" +
+                    "<p>個案管理師您好：</p>" +
+                    "<p>目前有同學輸入的心情小語被判定為<font color=\"#FF0000\"><b>四級狀態</b></font>，該同學所輸入的心情為：</p></br>" +
+                    "<p><b>" + prompt + "</b></p></br>" +
+                    "<p>請立即至系統查看並確認。</p>" +
+                    "</body></html>", true);
             mailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException e) {
             throw new UnknownException(e);
