@@ -93,7 +93,7 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
             throw new NotFoundException("請重新發送請求");
         }
 
-        return text.replace("\n", "");
+        return text.replace("\n", "").replace("語「", "");
     }
 
     private CompletionRequest textRequest(String prompt) {
