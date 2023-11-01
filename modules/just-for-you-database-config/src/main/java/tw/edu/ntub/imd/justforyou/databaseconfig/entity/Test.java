@@ -1,2 +1,4 @@
-package tw.edu.ntub.imd.justforyou.databaseconfig.entity;public class Test {
+package tw.edu.ntub.imd.justforyou.databaseconfig.entity;
+
+public class Test {
 }
