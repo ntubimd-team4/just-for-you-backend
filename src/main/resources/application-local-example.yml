@@ -31,3 +31,6 @@ just-for-you:
     url: jdbc:log4jdbc:mysql://{資料庫IP}:{port}/{資料庫名字}?serverTimezone=Asia/Taipei
     account: 帳號
     password: 密碼
+  mail:
+    account: 我們的團隊Mail
+    password: 'Mail Kay'

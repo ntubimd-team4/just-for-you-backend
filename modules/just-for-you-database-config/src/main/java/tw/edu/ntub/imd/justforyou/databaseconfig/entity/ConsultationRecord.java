@@ -19,20 +19,12 @@ import java.time.LocalDateTime;
 @Table(name = "consultation_record", schema = Config.DATABASE_NAME)
 public class ConsultationRecord {
     /**
-     * 流水號
-     *
-     * @since 1.0.0
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "c_id", nullable = false, unique = true)
-    private Integer cid;
-    /**
      * 對應summary_record的s_id
      *
      * @since 1.0.0
      */
-    @Column(name = "s_id", nullable = false)
+    @Id
+    @Column(name = "s_id", nullable = false, unique = true)
     private Integer sid;
     /**
      * 內容

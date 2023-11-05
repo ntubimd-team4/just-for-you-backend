@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class ConsultationRecordBean {
-    private Integer cid;
     private Integer sid;
     private String content;
     private String createId;

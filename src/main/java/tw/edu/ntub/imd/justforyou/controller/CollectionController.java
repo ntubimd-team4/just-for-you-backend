@@ -22,9 +22,9 @@ public class CollectionController {
     @Operation(summary = "音樂收藏 - 修改收藏狀態")
     @PatchMapping(path = "")
     public ResponseEntity<String> updateCollection(@RequestBody MusicRecommendBean musicRecommendBean) {
-        musicRecommendService.updateCollection(musicRecommendBean.getRid());
+        String msg = musicRecommendService.updateCollection(musicRecommendBean.getRid());
         return ResponseEntityBuilder.success()
-                .message("修改成功")
+                .message(msg)
                 .build();
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface SummaryRecordDAO extends BaseDAO<SummaryRecord, Integer> {
-    List<SummaryRecord> findByUserIdOrderByEstablishTimeDesc(String userId);
+    List<SummaryRecord> findByUserIdAndTeacherOrderByEstablishTimeDesc(String userId, String teacher);
 
     @Query("SELECT s.userId FROM SummaryRecord s WHERE s.teacher = :id GROUP BY s.userId")
     List<String> findByTeacher(@Param("id") String id);

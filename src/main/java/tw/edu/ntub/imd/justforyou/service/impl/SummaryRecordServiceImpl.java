@@ -3,13 +3,17 @@ package tw.edu.ntub.imd.justforyou.service.impl;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import tw.edu.ntub.birc.common.exception.UnknownException;
 import tw.edu.ntub.birc.common.util.CollectionUtils;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.EmotionDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.SummaryRecordDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.TopicDAO;
+import tw.edu.ntub.imd.justforyou.databaseconfig.dao.UserAccountDAO;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Emotion;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.SummaryRecord;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Topic;
@@ -20,6 +24,7 @@ import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
 import tw.edu.ntub.imd.justforyou.service.transformer.SummaryRecordTransformer;
 import tw.edu.ntub.imd.justforyou.util.encryption.EncryptionUtils;
 
+import javax.mail.MessagingException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +42,23 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     private final SummaryRecordDAO summaryRecordDAO;
     private final SummaryRecordTransformer summaryRecordTransformer;
     private final EmotionDAO emotionDAO;
+    private final UserAccountDAO userAccountDAO;
     private final TopicDAO topicDAO;
+    private final JavaMailSender mailSender;
 
     public SummaryRecordServiceImpl(SummaryRecordDAO summaryRecordDAO,
                                     SummaryRecordTransformer summaryRecordTransformer,
                                     EmotionDAO emotionDAO,
-                                    TopicDAO topicDAO) {
+                                    UserAccountDAO userAccountDAO,
+                                    TopicDAO topicDAO,
+                                    JavaMailSender mailSender) {
         super(summaryRecordDAO, summaryRecordTransformer);
         this.summaryRecordDAO = summaryRecordDAO;
         this.summaryRecordTransformer = summaryRecordTransformer;
         this.emotionDAO = emotionDAO;
+        this.userAccountDAO = userAccountDAO;
         this.topicDAO = topicDAO;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -107,6 +118,7 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         } else if (level.contains("三級")) {
             return 3;
         } else if (level.contains("四級")) {
+            sendMail(prompt);
             return 4;
         } else {
             return 0;
@@ -127,6 +139,25 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
                 .frequencyPenalty(0D)
                 .presencePenalty(0D)
                 .build();
+    }
+
+    private void sendMail(String prompt) {
+        String[] userAccounts = userAccountDAO.findByCaseManagement();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
+            mimeMessageHelper.setFrom("諮屬於你 <ntubimd112404@gmail.com>");
+            mimeMessageHelper.setBcc(userAccounts);
+            mimeMessageHelper.setSubject("緊急！有四級通知！");
+            mimeMessageHelper.setText("<html><head></head><body>" +
+                    "<p>個案管理師您好：</p>" +
+                    "<p>目前有同學輸入的心情小語被判定為<font color=\"#FF0000\"><b>四級狀態</b></font>，該同學所輸入的心情為：</p></br>" +
+                    "<p><b>" + prompt + "</b></p></br>" +
+                    "<p>請立即至系統查看並確認。</p>" +
+                    "</body></html>", true);
+            mailSender.send(mimeMessageHelper.getMimeMessage());
+        } catch (MessagingException e) {
+            throw new UnknownException(e);
+        }
     }
 
     @Override
@@ -204,7 +235,8 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
 
     @Override
     public List<SummaryRecordBean> searchSummaryRecordList(String userId) {
-        return CollectionUtils.map(summaryRecordDAO.findByUserIdOrderByEstablishTimeDesc(userId),
+        String teacher = SecurityUtils.getLoginUserAccount();
+        return CollectionUtils.map(summaryRecordDAO.findByUserIdAndTeacherOrderByEstablishTimeDesc(userId, teacher),
                 summaryRecordTransformer::transferToBean);
     }
 

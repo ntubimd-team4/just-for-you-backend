@@ -9,6 +9,7 @@ import tw.edu.ntub.imd.justforyou.service.ConsultationRecordService;
 import tw.edu.ntub.imd.justforyou.service.transformer.ConsultationRecordTransformer;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ConsultationRecordServiceImpl extends BaseServiceImpl<ConsultationRecordBean, ConsultationRecord, Integer> implements ConsultationRecordService {
@@ -30,8 +31,13 @@ public class ConsultationRecordServiceImpl extends BaseServiceImpl<ConsultationR
     }
 
     @Override
-    public List<ConsultationRecordBean> searchBySid(Integer sid) {
-        return CollectionUtils.map(consultationRecordDAO.findBySidOrderByCreateTimeDesc(sid),
-                consultationRecordTransformer::transferToBean);
+    public ConsultationRecordBean getBySid(Integer sid) {
+        Optional<ConsultationRecord> consultationRecordOptional = consultationRecordDAO.findBySidOrderByCreateTimeDesc(sid);
+        if (consultationRecordOptional.isPresent()) {
+            ConsultationRecord consultationRecord = consultationRecordOptional.get();
+            return consultationRecordTransformer.transferToBean(consultationRecord);
+        } else {
+            return new ConsultationRecordBean();
+        }
     }
 }

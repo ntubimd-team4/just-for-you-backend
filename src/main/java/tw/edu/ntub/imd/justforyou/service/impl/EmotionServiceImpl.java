@@ -61,7 +61,9 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
                         Comparator.comparing(
                                 MusicEmotion::getMid))), ArrayList::new));
         Collections.shuffle(collect);
-        collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 5);
+        if (collect.size() > 5) {
+            collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 5);
+        }
         return collect;
     }
 
@@ -91,7 +93,7 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
             throw new NotFoundException("請重新發送請求");
         }
 
-        return text.replace("\n", "");
+        return text.replace("\n", "").replace("語「", "");
     }
 
     private CompletionRequest textRequest(String prompt) {
