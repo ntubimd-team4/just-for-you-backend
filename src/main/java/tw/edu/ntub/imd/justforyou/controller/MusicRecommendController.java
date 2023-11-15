@@ -45,6 +45,7 @@ public class MusicRecommendController {
                 (contentData, content) -> {
                     contentData.add("mid", content.getMid());
                     contentData.add("song", content.getSong());
+                    contentData.add("thumbnails", content.getThumbnails());
                     contentData.add("link", content.getLink());
                 });
     }
