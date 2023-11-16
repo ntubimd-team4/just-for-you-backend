@@ -86,14 +86,18 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
         List<String> list = recommendMusicList.stream().distinct().collect(Collectors.toList());
 
         OpenAiService service = new OpenAiService(textToken, Duration.ofSeconds(60));
-        String text;
+        String emotionText;
         try {
-            text = service.createCompletion(textRequest(list.toString())).getChoices().get(0).getText();
+            emotionText = service.createCompletion(textRequest(list.toString())).getChoices().get(0).getText();
         } catch (Exception e) {
             throw new NotFoundException("請重新發送請求");
         }
 
-        return text.replace("\n", "").replace("語「", "");
+        return emotionText
+                .replace("\n", "")
+                .replace("語「", "")
+                .replace("「", "")
+                .replace("」", "");
     }
 
     private CompletionRequest textRequest(String prompt) {
