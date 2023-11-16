@@ -11,6 +11,7 @@ import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicEmotion;
+import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Level;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.*;
@@ -42,34 +43,20 @@ public class SummaryRecordController {
         List<String> emotionList = summaryRecordService.saveEmotion(sid, prompt);
         summaryRecordService.saveTopic(sid, prompt);
 
-//        List<String> colorList = new ArrayList<>(); //Todo 顏色格式，待復原
-//        for (String emotionStr : emotionList) {
-//            colorList.add(EmotionCode.transformerToColor(emotionStr));
-//        }
-//        List<String> colors = colorList.stream().distinct().collect(Collectors.toList());
-
-
-//        Map<String, List<String>> data = new HashMap<>();
-//        for (String color : colors) {
-//            List<String> emotion = EmotionCode.transformerToEmotion(color, emotionList);
-//            data.put(color, emotion);
-//        }
-
         String value = SymbolUtils.remoteSymbol(emotionList);
         List<MusicEmotion> musicEmotionList = emotionService.searchMucic(sid);
         List<Music> musicList = emotionService.recommendMusic(sid, musicEmotionList);
         String text = emotionService.generateText(musicEmotionList);
 
-
         ObjectData objectData = new ObjectData();
         objectData.add("sid", sid);
         objectData.add("text", text);
         objectData.add("value", value);
+        objectData.add("color", EmotionCode.transformerToColor(value.split(",")[0]));
         addMusicListToObjectData(objectData, musicList);
 
         return ResponseEntityBuilder.success()
                 .message("摘要成功")
-//                .data(SingleValueObjectData.create("value", remoteEnd)) // TODO 一評摘要API回傳格式
                 .data(objectData)
                 .build();
     }
