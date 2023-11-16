@@ -9,7 +9,7 @@ import java.util.List;
 public interface EmotionService extends BaseService<EmotionBean, Integer> {
     List<Music> recommendMusic(Integer sid, List<MusicEmotion> musicEmotionList);
 
-    List<MusicEmotion> searchMucic(Integer sid);
+    List<MusicEmotion> searchMusic(Integer sid);
 
     String generateText(List<MusicEmotion> musicEmotionList);
 

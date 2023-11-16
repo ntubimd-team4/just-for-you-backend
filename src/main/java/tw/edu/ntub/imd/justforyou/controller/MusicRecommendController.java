@@ -27,7 +27,7 @@ public class MusicRecommendController {
     @Operation(summary = "重新推薦音樂")
     @GetMapping(path = "")
     public ResponseEntity<String> recommendMusicAgain(@RequestParam(name = "sid") Integer sid) {
-        List<MusicEmotion> musicEmotionList = emotionService.searchMucic(sid);
+        List<MusicEmotion> musicEmotionList = emotionService.searchMusic(sid);
         List<Music> musicList = emotionService.recommendMusic(sid, musicEmotionList);
         String text = emotionService.generateText(musicEmotionList);
         ObjectData objectData = new ObjectData();

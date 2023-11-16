@@ -44,7 +44,7 @@ public class SummaryRecordController {
         summaryRecordService.saveTopic(sid, prompt);
 
         String value = SymbolUtils.remoteSymbol(emotionList);
-        List<MusicEmotion> musicEmotionList = emotionService.searchMucic(sid);
+        List<MusicEmotion> musicEmotionList = emotionService.searchMusic(sid);
         List<Music> musicList = emotionService.recommendMusic(sid, musicEmotionList);
         String text = emotionService.generateText(musicEmotionList);
 

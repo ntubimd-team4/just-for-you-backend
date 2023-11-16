@@ -53,7 +53,7 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
     }
 
     @Override
-    public List<MusicEmotion> searchMucic(Integer sid) {
+    public List<MusicEmotion> searchMusic(Integer sid) {
         List<Integer> emotionList = emotionDAO.findBySid(sid);
         List<MusicEmotion> musicEmotionList = musicEmotionDAO.findByEmotionTagIn(emotionList);
         List<MusicEmotion> collect = musicEmotionList.stream().collect(Collectors.collectingAndThen(
