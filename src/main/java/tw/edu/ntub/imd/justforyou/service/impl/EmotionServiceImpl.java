@@ -53,7 +53,7 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
     }
 
     @Override
-    public List<MusicEmotion> searchMucic(Integer sid) {
+    public List<MusicEmotion> searchMusic(Integer sid) {
         List<Integer> emotionList = emotionDAO.findBySid(sid);
         List<MusicEmotion> musicEmotionList = musicEmotionDAO.findByEmotionTagIn(emotionList);
         List<MusicEmotion> collect = musicEmotionList.stream().collect(Collectors.collectingAndThen(
@@ -61,8 +61,8 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
                         Comparator.comparing(
                                 MusicEmotion::getMid))), ArrayList::new));
         Collections.shuffle(collect);
-        if (collect.size() > 5) {
-            collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 5);
+        if (collect.size() > 10) {
+            collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 10);
         }
         return collect;
     }
@@ -86,14 +86,18 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
         List<String> list = recommendMusicList.stream().distinct().collect(Collectors.toList());
 
         OpenAiService service = new OpenAiService(textToken, Duration.ofSeconds(60));
-        String text;
+        String emotionText;
         try {
-            text = service.createCompletion(textRequest(list.toString())).getChoices().get(0).getText();
+            emotionText = service.createCompletion(textRequest(list.toString())).getChoices().get(0).getText();
         } catch (Exception e) {
             throw new NotFoundException("請重新發送請求");
         }
 
-        return text.replace("\n", "").replace("語「", "");
+        return emotionText
+                .replace("\n", "")
+                .replace("語「", "")
+                .replace("「", "")
+                .replace("」", "");
     }
 
     private CompletionRequest textRequest(String prompt) {

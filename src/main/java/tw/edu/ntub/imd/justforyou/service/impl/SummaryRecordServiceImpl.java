@@ -128,11 +128,11 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     private CompletionRequest levelRequest(String prompt) {
         return CompletionRequest.builder()
                 .model("text-davinci-003")
-                .prompt("請依照以下標準判斷出「" + prompt + "」這句話屬於哪一級別\n" +
-                        "一級:無自殺企圖\n" +
-                        "二級:持續有自殺、不想活之意念\n" +
-                        "三級:已嚴重威脅要自殺、不想活, 但無立即危險\n" +
-                        "四級:有強烈之自殺行動、自殺計畫、偏激或立即有危險")
+                .prompt("一級:壓力可能在一般範圍，或輕度困擾\n" +
+                        "二級:可能有中度情緒困擾\n" +
+                        "三級:可能有嚴重情緒困擾\n" +
+                        "四級:有時有自殺意念或有強烈之自殺行動、自殺計畫、偏激或立即有危險需立即通報\n" +
+                        "請依照以上標準判斷出「" + prompt + "」這句話屬於哪一級別?")
                 .temperature(0.5)
                 .maxTokens(2048)
                 .topP(1D)

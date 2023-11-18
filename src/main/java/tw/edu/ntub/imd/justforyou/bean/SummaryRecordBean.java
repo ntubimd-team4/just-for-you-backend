@@ -18,8 +18,5 @@ public class SummaryRecordBean {
     private String modifyId;
     private LocalDateTime modifyTime;
 
-    private String model;
     private String prompt;
-    private Integer maxTokens;
-    private Double temperature;
 }

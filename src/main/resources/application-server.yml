@@ -1,5 +1,5 @@
 server:
-  ip: 127.0.0.1
+  ip: http://justforyou.ntub.edu.tw
   image:
     name: image
     path: 'C:\just-for-you\UploadFile\${server.image.name}\'
