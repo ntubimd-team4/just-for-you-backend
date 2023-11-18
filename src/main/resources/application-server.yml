@@ -12,6 +12,12 @@ server:
     value: ''
   topic-token:
     value: ''
+  text-token:
+    value: ''
+  level-token:
+    value: ''
+  youtube-api-key:
+    value: ""
 logging:
   level:
     sqltiming: DEBUG
@@ -21,3 +27,7 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
+just-for-you:
+  mail:
+    account: ntubimd112404@gmail.com
+    password: ''
