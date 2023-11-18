@@ -8,6 +8,11 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.listener.MusicEmotionLis
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * 音樂情緒表
+ *
+ * @since 1.0.0
+ */
 @Data
 @Entity
 @EntityListeners(MusicEmotionListener.class)
