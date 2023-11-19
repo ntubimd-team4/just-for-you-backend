@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tw.edu.ntub.imd.justforyou.bean.RecommendRecordBean;
+import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
 import tw.edu.ntub.imd.justforyou.service.RecommendRecordService;
@@ -30,71 +31,40 @@ public class RecommendRecordController {
     @Operation(summary = "全查(目前無分頁)", description = "wireframe pdf第5頁畫面")
     @GetMapping(path = "")
     public ResponseEntity<String> searchUserRecommendRecord() {
-        ArrayData arrayData = new ArrayData();
         String userId = SecurityUtils.getLoginUserAccount();
-        List<LocalDateTime> recommendRecordBeans = recommendRecordService.searchByUserId(userId);
-        for (LocalDateTime recommendRecordBean : recommendRecordBeans) {
-            ObjectData objectData = arrayData.addObject();
-            objectData.add("establishTime", recommendRecordBean.toString().substring(0, 16).replace("T", " "));
-
-            List<RecommendRecordBean> timeList = recommendRecordService.searchByEstablishTime(userId, recommendRecordBean);
-            addMusicListToObjectData(objectData, timeList);
-        }
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
-                .data(arrayData)
+                .data(recommendRecordService.searchByEstablishTime(userId), this::addMusicListToObjectData)
                 .build();
     }
 
-    private void addMusicListToObjectData(ObjectData objectData, List<RecommendRecordBean> list) {
-        CollectionObjectData data = objectData.createCollectionData();
-        data.add("playList", list,
-                (contentData, content) -> {
-                    contentData.add("rid", content.getRid());
-                    contentData.add("song", content.getSong());
-                    contentData.add("thumbnails", content.getThumbnails());
-                    contentData.add("link", content.getLink());
-                    contentData.add("emotion_tag", content.getEmotionTag());
-                    contentData.add("description", EmotionCode.convertToDescription(content.getEmotionTag()));
-                    contentData.add("isCollection", content.getCollection());
-                });
+    private void addMusicListToObjectData(ObjectData objectData, RecommendRecordBean recommendRecordBean) {
+        objectData.add("rid", recommendRecordBean.getRid());
+        objectData.add("song", recommendRecordBean.getSong());
+        objectData.add("thumbnails", recommendRecordBean.getThumbnails());
+        objectData.add("link", recommendRecordBean.getLink());
+        objectData.add("emotion_tag", recommendRecordBean.getEmotionTag());
+        objectData.add("description", EmotionCode.convertToDescription(recommendRecordBean.getEmotionTag()));
+        objectData.add("isCollection", recommendRecordBean.getCollection());
     }
 
     @Operation(summary = "推薦紀錄 - 按標籤類型查詢", description = "wireframe pdf第5頁畫面")
     @GetMapping(path = "/tag")
     public ResponseEntity<String> searchTag(@RequestParam(name = "tag") Integer tag) {
-        ArrayData arrayData = new ArrayData();
         String userId = SecurityUtils.getLoginUserAccount();
-        List<LocalDateTime> recommendRecordBeans = recommendRecordService.searchByUserIdAndEmotionTag(userId, tag);
-        for (LocalDateTime recommendRecordBean : recommendRecordBeans) {
-            ObjectData objectData = arrayData.addObject();
-            objectData.add("establishTime", recommendRecordBean.toString().substring(0, 16).replace("T", " "));
-
-            List<RecommendRecordBean> timeList = recommendRecordService.searchByEstablishTime(userId, recommendRecordBean, tag);
-            addMusicListToObjectData(objectData, timeList);
-        }
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
-                .data(arrayData)
+                .data(recommendRecordService.searchByEstablishTime(userId, tag), this::addMusicListToObjectData)
                 .build();
     }
 
     @Operation(summary = "推薦紀錄 - 模糊查詢", description = "wireframe pdf第5頁畫面")
     @GetMapping(path = "/query")
     public ResponseEntity<String> querySong(@RequestParam(name = "song") String song) {
-        ArrayData arrayData = new ArrayData();
         String userId = SecurityUtils.getLoginUserAccount();
-        List<LocalDateTime> recommendRecordBeans = recommendRecordService.searchByUserIdAndSong(userId, song);
-        for (LocalDateTime recommendRecordBean : recommendRecordBeans) {
-            ObjectData objectData = arrayData.addObject();
-            objectData.add("establishTime", recommendRecordBean.toString().substring(0, 16).replace("T", " "));
-
-            List<RecommendRecordBean> timeList = recommendRecordService.searchByEstablishTime(userId, recommendRecordBean, song);
-            addMusicListToObjectData(objectData, timeList);
-        }
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
-                .data(arrayData)
+                .data(recommendRecordService.searchByEstablishTime(userId, song), this::addMusicListToObjectData)
                 .build();
     }
 

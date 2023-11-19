@@ -8,7 +8,6 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.view.RecommendRecord;
 import tw.edu.ntub.imd.justforyou.service.RecommendRecordService;
 import tw.edu.ntub.imd.justforyou.service.transformer.RecommendRecordTransformer;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,43 +22,28 @@ public class RecommendRecordServiceImpl extends BaseViewServiceImpl<RecommendRec
     }
 
     @Override
-    public List<LocalDateTime> searchByUserId(String userId) {
-        return recommendRecordDAO.findByUserIdOrderByEstablishTime(userId);
-    }
-
-    @Override
     public List<Integer> searchUserEmotionTag(String userId) {
         return recommendRecordDAO.findEmotionTagByUserId(userId);
     }
 
     @Override
-    public List<LocalDateTime> searchByUserIdAndSong(String userId, String song) {
-        return recommendRecordDAO.findByTag(userId, song);
-    }
-
-    @Override
-    public List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime, String song) {
+    public List<RecommendRecordBean> searchByEstablishTime(String userId, String song) {
         return CollectionUtils.map(
-                recommendRecordDAO.findByUserIdAndEstablishTimeAndSongContaining(userId, establishTime, song),
+                recommendRecordDAO.findByUserIdAndSongContaining(userId, song),
                 recommendRecordTransformer::transferToBean);
     }
 
     @Override
-    public List<LocalDateTime> searchByUserIdAndEmotionTag(String userId, Integer tag) {
-        return recommendRecordDAO.findByTag(userId, tag);
-    }
-
-    @Override
-    public List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime) {
+    public List<RecommendRecordBean> searchByEstablishTime(String userId) {
         return CollectionUtils.map(
-                recommendRecordDAO.findByUserIdAndEstablishTime(userId, establishTime),
+                recommendRecordDAO.findByUserId(userId),
                 recommendRecordTransformer::transferToBean);
     }
 
     @Override
-    public List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime, Integer tag) {
+    public List<RecommendRecordBean> searchByEstablishTime(String userId, Integer tag) {
         return CollectionUtils.map(
-                recommendRecordDAO.findByUserIdAndEstablishTimeAndEmotionTag(userId, establishTime, tag),
+                recommendRecordDAO.findByUserIdAndEmotionTag(userId, tag),
                 recommendRecordTransformer::transferToBean);
     }
 }
