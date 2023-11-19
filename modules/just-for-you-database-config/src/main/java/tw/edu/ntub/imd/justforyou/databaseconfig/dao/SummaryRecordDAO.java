@@ -13,4 +13,8 @@ public interface SummaryRecordDAO extends BaseDAO<SummaryRecord, Integer> {
 
     @Query("SELECT s.userId FROM SummaryRecord s WHERE s.teacher = :id GROUP BY s.userId")
     List<String> findByTeacher(@Param("id") String id);
+
+    List<SummaryRecord> findByTeacherIsNull();
+
+    List<SummaryRecord> findByTeacherIsNotNull();
 }

@@ -102,7 +102,9 @@ public class SummaryRecordController {
         objectData.add("sid", summaryRecordBean.getSid());
         objectData.add("content", EncryptionUtils.decryptText(summaryRecordBean.getContent()));
         objectData.add("summary", EncryptionUtils.decryptText(summaryRecordBean.getSummary()));
+        objectData.add("level", Objects.requireNonNull(Level.of(summaryRecordBean.getLevel())).getLevelName());
         objectData.add("establishTime", summaryRecordBean.getEstablishTime().toString().substring(0, 16).replace("T", " "));
+        objectData.add("emotion", addEmotionToObjectData(summaryRecordBean.getSid()));
         objectData.add("topic", addTopicToObjectData(summaryRecordBean.getSid()));
     }
 
@@ -133,10 +135,12 @@ public class SummaryRecordController {
 
     @Operation(summary = "全部摘要紀錄", description = "個案管理師分配頁")
     @GetMapping(path = "/list")
-    public ResponseEntity<String> searchAllSummaryRecord() {
+    public ResponseEntity<String> searchAllSummaryRecord(@RequestParam("assign") Integer assign) {
+        List<SummaryRecordBean> summaryRecordBeanList = assign == 0 ?
+                summaryRecordService.searchByTeacherIsNull() : summaryRecordService.searchByTeacherIsNotNull();
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
-                .data(summaryRecordService.searchAll(), this::addAllSummaryObject)
+                .data(summaryRecordBeanList, this::addAllSummaryObject)
                 .build();
     }
 
