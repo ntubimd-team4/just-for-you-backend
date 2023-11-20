@@ -234,6 +234,16 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     }
 
     @Override
+    public List<SummaryRecordBean> searchByTeacherIsNull() {
+        return CollectionUtils.map(summaryRecordDAO.findByTeacherIsNull(), summaryRecordTransformer::transferToBean);
+    }
+
+    @Override
+    public List<SummaryRecordBean> searchByTeacherIsNotNull() {
+        return CollectionUtils.map(summaryRecordDAO.findByTeacherIsNotNull(), summaryRecordTransformer::transferToBean);
+    }
+
+    @Override
     public List<SummaryRecordBean> searchSummaryRecordList(String userId) {
         String teacher = SecurityUtils.getLoginUserAccount();
         return CollectionUtils.map(summaryRecordDAO.findByUserIdAndTeacherOrderByEstablishTimeDesc(userId, teacher),

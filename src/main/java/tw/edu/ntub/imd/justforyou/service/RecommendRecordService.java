@@ -6,17 +6,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RecommendRecordService extends BaseViewService<RecommendRecordBean, Integer> {
-    List<LocalDateTime> searchByUserId(String userId);
+    List<RecommendRecordBean> searchByEstablishTime(String userId);
 
-    List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime);
-
-    List<LocalDateTime> searchByUserIdAndEmotionTag(String userId, Integer tag);
-
-    List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime, Integer tag);
+    List<RecommendRecordBean> searchByEstablishTime(String userId, Integer tag);
 
     List<Integer> searchUserEmotionTag(String loginUserAccount);
 
-    List<LocalDateTime> searchByUserIdAndSong(String userId, String song);
-
-    List<RecommendRecordBean> searchByEstablishTime(String userId, LocalDateTime establishTime, String song);
+    List<RecommendRecordBean> searchByEstablishTime(String userId, String song);
 }

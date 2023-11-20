@@ -14,4 +14,8 @@ public interface SummaryRecordService extends BaseService<SummaryRecordBean, Int
     List<SummaryRecordBean> searchSummaryRecordList(String userId);
 
     List<String> searchByTeacher(String id);
+
+    List<SummaryRecordBean> searchByTeacherIsNull();
+
+    List<SummaryRecordBean> searchByTeacherIsNotNull();
 }
