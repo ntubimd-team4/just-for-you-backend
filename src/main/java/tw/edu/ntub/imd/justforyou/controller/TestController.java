@@ -1,2 +1,4 @@
-package tw.edu.ntub.imd.justforyou.controller;public class TestController {
+package tw.edu.ntub.imd.justforyou.controller;
+
+public class TestController {
 }
