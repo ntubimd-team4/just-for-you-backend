@@ -39,7 +39,9 @@ public class SummaryRecordController {
     @PostMapping(path = "")
     public ResponseEntity<String> openAi(@RequestBody SummaryRecordBean summaryRecordBean) {
         String prompt = summaryRecordBean.getPrompt();
-        Integer sid = summaryRecordService.saveSummaryRecord(summaryRecordBean);
+        String[] summaryRecord = summaryRecordService.saveSummaryRecord(summaryRecordBean).split(",");
+        Integer sid = Integer.parseInt(summaryRecord[0]);
+        String level = summaryRecord[1];
         List<String> emotionList = summaryRecordService.saveEmotion(sid, prompt);
         summaryRecordService.saveTopic(sid, prompt);
 
@@ -50,6 +52,7 @@ public class SummaryRecordController {
 
         ObjectData objectData = new ObjectData();
         objectData.add("sid", sid);
+        objectData.add("isHighLevel", level.equals(Level.LEVEL_THREE.getLevelStr()) || level.equals(Level.LEVEL_FOUR.getLevelStr()));
         objectData.add("text", text);
         objectData.add("value", value);
         objectData.add("color", EmotionCode.transformerToColor(value.split(",")[0]));

@@ -67,7 +67,7 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     }
 
     @Override
-    public Integer saveSummaryRecord(SummaryRecordBean summaryRecordBean) {
+    public String saveSummaryRecord(SummaryRecordBean summaryRecordBean) {
         String id = SecurityUtils.getLoginUserAccount();
 
         OpenAiService service = new OpenAiService(summaryToken, Duration.ofSeconds(60));
@@ -86,7 +86,7 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         summaryRecord.setLevel(getLevel(summaryRecordBean.getPrompt()));
         summaryRecordDAO.save(summaryRecord);
 
-        return summaryRecord.getSid();
+        return summaryRecord.getSid() + "," + summaryRecord.getLevel();
     }
 
     private CompletionRequest summaryRecordRequest(String prompt) {
