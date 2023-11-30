@@ -18,6 +18,8 @@ import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Emotion;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.SummaryRecord;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Topic;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
+import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Level;
+import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Role;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.TopicCode;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.SummaryRecordService;
@@ -116,9 +118,10 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         } else if (level.contains("二級")) {
             return 2;
         } else if (level.contains("三級")) {
+            sendMail(prompt, Level.LEVEL_THREE.getLevel());
             return 3;
         } else if (level.contains("四級")) {
-            sendMail(prompt);
+            sendMail(prompt, Level.LEVEL_FOUR.getLevel());
             return 4;
         } else {
             return 0;
@@ -141,18 +144,31 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
                 .build();
     }
 
-    private void sendMail(String prompt) {
-        String[] userAccounts = userAccountDAO.findByCaseManagement();
+    private void sendMail(String prompt, Integer level) {
+        String[] userAccounts;
+        String levelName;
+        String appellation;
+        if (level == 3) {
+            levelName = Level.LEVEL_THREE.getLevelChar();
+            appellation = Role.CASE_MANAGEMENT.getTypeName();
+            userAccounts = userAccountDAO.findByCaseManagement();
+        } else {
+            levelName = Level.LEVEL_FOUR.getLevelChar();
+            appellation = Role.CASE_MANAGEMENT.getTypeName() + " / " + Role.TEACHER.getTypeName();
+            userAccounts = userAccountDAO.findByAllTeacher();
+        }
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
             mimeMessageHelper.setFrom("諮屬於你 <ntubimd112404@gmail.com>");
             mimeMessageHelper.setBcc(userAccounts);
-            mimeMessageHelper.setSubject("緊急！有四級通知！");
+            mimeMessageHelper.setSubject("緊急！有" + levelName + "級通知！");
             mimeMessageHelper.setText("<html><head></head><body>" +
-                    "<p>個案管理師您好：</p>" +
-                    "<p>目前有同學輸入的心情小語被判定為<font color=\"#FF0000\"><b>四級狀態</b></font>，該同學所輸入的心情為：</p></br>" +
-                    "<p><b>" + prompt + "</b></p></br>" +
+                    "<p>" + appellation + "您好：</p>" +
+                    "<p>目前有同學輸入的心情小語被判定為<font color=\"#FF0000\"><b style=\"font-size: 20px;\">" + levelName + "級狀態</b></font>，" +
+                    "該同學所輸入的心情為：</p></br>" +
+                    "<p style=\"font-size: 18px;\"><b>" + prompt + "</b></p></br>" +
                     "<p>請立即至系統查看並確認。</p>" +
+                    "<a href=\"https://justforyou.ntub.edu.tw\">點我前往系統</a>" +
                     "</body></html>", true);
             mailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException e) {

@@ -12,6 +12,9 @@ public interface UserAccountDAO extends BaseDAO<UserAccount, String>, JpaSpecifi
     @Query("FROM UserAccount u WHERE u.role = 0 OR u.role = 1")
     List<UserAccount> findByTeacher();
 
-    @Query("SELECT u.userId FROM UserAccount u WHERE u.role = 0")
+    @Query("SELECT u.userId FROM UserAccount u WHERE u.available = true AND u.role = 0")
     String[] findByCaseManagement();
+
+    @Query("SELECT u.userId FROM UserAccount u WHERE u.available = true AND u.role = 0 OR u.available = true AND u.role = 1")
+    String[] findByAllTeacher();
 }
