@@ -7,7 +7,8 @@ public enum Level {
     LEVEL_ONE(1, "1", "一", "第一級"),
     LEVEL_TWO(2, "2", "二", "第二級"),
     LEVEL_THREE(3, "3", "三", "第三級"),
-    LEVEL_FOUR(4, "4", "四", "第四級");
+    LEVEL_FOUR(4, "4", "四", "第四級"),
+    LEVEL_THREE_TO_TEACHER(5, "5", "五", "個管師分配給諮商師三級狀態個案");
 
     @Getter
     private final Integer level;

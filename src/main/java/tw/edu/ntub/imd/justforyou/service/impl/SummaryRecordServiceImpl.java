@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import tw.edu.ntub.birc.common.exception.UnknownException;
 import tw.edu.ntub.birc.common.util.CollectionUtils;
+import tw.edu.ntub.birc.common.util.JavaBeanUtils;
 import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.EmotionDAO;
@@ -30,6 +31,7 @@ import javax.mail.MessagingException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean, SummaryRecord, Integer> implements SummaryRecordService {
@@ -66,6 +68,23 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     @Override
     public SummaryRecordBean save(SummaryRecordBean summaryRecordBean) {
         return null;
+    }
+
+    @Override
+    public void update(Integer id, SummaryRecordBean summaryRecordBean) {
+        Optional<SummaryRecord> optional = summaryRecordDAO.findById(id);
+        if (optional.isPresent()) {
+            SummaryRecord summaryRecord = optional.get();
+            JavaBeanUtils.copy(summaryRecordBean, summaryRecord);
+            if (summaryRecord.getLevel() == 3) {
+                sendMail(EncryptionUtils.decryptText(summaryRecord.getContent()),
+                        Level.LEVEL_THREE_TO_TEACHER.getLevel(),
+                        summaryRecordBean.getTeacher());
+            }
+            summaryRecordDAO.update(summaryRecord);
+        } else {
+            throw new NotFoundException("找不到資料, id = " + id);
+        }
     }
 
     @Override
@@ -118,10 +137,10 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
         } else if (level.contains("二級")) {
             return 2;
         } else if (level.contains("三級")) {
-            sendMail(prompt, Level.LEVEL_THREE.getLevel());
+            sendMail(prompt, Level.LEVEL_THREE.getLevel(), null);
             return 3;
         } else if (level.contains("四級")) {
-            sendMail(prompt, Level.LEVEL_FOUR.getLevel());
+            sendMail(prompt, Level.LEVEL_FOUR.getLevel(), null);
             return 4;
         } else {
             return 0;
@@ -144,19 +163,29 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
                 .build();
     }
 
-    private void sendMail(String prompt, Integer level) {
+    private void sendMail(String prompt, Integer level, String teacher) {
         String[] userAccounts;
-        String levelName;
-        String appellation;
-        if (level == 3) {
-            levelName = Level.LEVEL_THREE.getLevelChar();
-            appellation = Role.CASE_MANAGEMENT.getTypeName();
-            userAccounts = userAccountDAO.findByCaseManagement();
-        } else {
-            levelName = Level.LEVEL_FOUR.getLevelChar();
-            appellation = Role.CASE_MANAGEMENT.getTypeName() + " / " + Role.TEACHER.getTypeName();
-            userAccounts = userAccountDAO.findByAllTeacher();
+        String levelName, appellation;
+        switch (level) {
+            case 3:
+                levelName = Level.LEVEL_THREE.getLevelChar();
+                appellation = Role.CASE_MANAGEMENT.getTypeName();
+                userAccounts = userAccountDAO.findByCaseManagement();
+                break;
+            case 5:
+                levelName = Level.LEVEL_THREE.getLevelChar();
+                appellation = Role.TEACHER.getTypeName();
+                userAccounts = new String[]{teacher};
+                break;
+            default:
+                levelName = Level.LEVEL_FOUR.getLevelChar();
+                appellation = Role.CASE_MANAGEMENT.getTypeName() + " / " + Role.TEACHER.getTypeName();
+                userAccounts = userAccountDAO.findByAllTeacher();
         }
+        sendMailContent(prompt, userAccounts, levelName, appellation);
+    }
+
+    private void sendMailContent(String prompt, String[] userAccounts, String levelName, String appellation) {
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), true);
             mimeMessageHelper.setFrom("諮屬於你 <ntubimd112404@gmail.com>");
@@ -164,7 +193,8 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
             mimeMessageHelper.setSubject("緊急！有" + levelName + "級通知！");
             mimeMessageHelper.setText("<html><head></head><body>" +
                     "<p>" + appellation + "您好：</p>" +
-                    "<p>目前有同學輸入的心情小語被判定為<font color=\"#FF0000\"><b style=\"font-size: 20px;\">" + levelName + "級狀態</b></font>，" +
+                    "<p>目前有同學輸入的心情小語被判定為<font color=\"#FF0000\"><b style=\"font-size: 20px;\">" + levelName +
+                    "級狀態</b></font>，" +
                     "該同學所輸入的心情為：</p></br>" +
                     "<p style=\"font-size: 18px;\"><b>" + prompt + "</b></p></br>" +
                     "<p>請立即至系統查看並確認。</p>" +
