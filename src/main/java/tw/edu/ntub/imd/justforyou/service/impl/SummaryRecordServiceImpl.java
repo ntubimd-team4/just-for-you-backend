@@ -280,13 +280,19 @@ public class SummaryRecordServiceImpl extends BaseServiceImpl<SummaryRecordBean,
     }
 
     @Override
-    public List<SummaryRecordBean> searchByTeacherIsNull() {
-        return CollectionUtils.map(summaryRecordDAO.findByTeacherIsNull(), summaryRecordTransformer::transferToBean);
+    public List<SummaryRecordBean> searchByTeacherIsNull(Integer level) {
+        return CollectionUtils.map(level == 0 ?
+                        summaryRecordDAO.findByTeacherIsNull() :
+                        summaryRecordDAO.findByTeacherIsNullAndLevel(level),
+                summaryRecordTransformer::transferToBean);
     }
 
     @Override
-    public List<SummaryRecordBean> searchByTeacherIsNotNull() {
-        return CollectionUtils.map(summaryRecordDAO.findByTeacherIsNotNull(), summaryRecordTransformer::transferToBean);
+    public List<SummaryRecordBean> searchByTeacherIsNotNull(Integer level) {
+        return CollectionUtils.map(level == 0 ?
+                        summaryRecordDAO.findByTeacherIsNotNull() :
+                        summaryRecordDAO.findByTeacherIsNotNullAndLevel(level),
+                summaryRecordTransformer::transferToBean);
     }
 
     @Override

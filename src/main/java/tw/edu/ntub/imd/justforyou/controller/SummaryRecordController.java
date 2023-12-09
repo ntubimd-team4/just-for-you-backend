@@ -138,9 +138,12 @@ public class SummaryRecordController {
 
     @Operation(summary = "全部摘要紀錄", description = "個案管理師分配頁")
     @GetMapping(path = "/list")
-    public ResponseEntity<String> searchAllSummaryRecord(@RequestParam("assign") Integer assign) {
-        List<SummaryRecordBean> summaryRecordBeanList = assign == 0 ?
-                summaryRecordService.searchByTeacherIsNull() : summaryRecordService.searchByTeacherIsNotNull();
+    public ResponseEntity<String> searchAllSummaryRecord(@RequestParam("level") Integer level,
+                                                         @RequestParam("assign") Integer assign) {
+        List<SummaryRecordBean> summaryRecordBeanList =
+                assign == 0 ?
+                        summaryRecordService.searchByTeacherIsNull(level) :
+                        summaryRecordService.searchByTeacherIsNotNull(level);
         return ResponseEntityBuilder.success()
                 .message("查詢成功")
                 .data(summaryRecordBeanList, this::addAllSummaryObject)

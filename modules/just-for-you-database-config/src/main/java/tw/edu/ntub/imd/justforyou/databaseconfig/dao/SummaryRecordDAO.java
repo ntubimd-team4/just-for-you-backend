@@ -16,5 +16,9 @@ public interface SummaryRecordDAO extends BaseDAO<SummaryRecord, Integer> {
 
     List<SummaryRecord> findByTeacherIsNull();
 
+    List<SummaryRecord> findByTeacherIsNullAndLevel(Integer level);
+
     List<SummaryRecord> findByTeacherIsNotNull();
+
+    List<SummaryRecord> findByTeacherIsNotNullAndLevel(Integer level);
 }
