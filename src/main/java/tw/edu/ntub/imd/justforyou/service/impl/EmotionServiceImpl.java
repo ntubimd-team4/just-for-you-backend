@@ -61,8 +61,8 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
                         Comparator.comparing(
                                 MusicEmotion::getMid))), ArrayList::new));
         Collections.shuffle(collect);
-        if (collect.size() > 10) {
-            collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 10);
+        if (collect.size() > 5) {
+            collect = collect.stream().distinct().collect(Collectors.toList()).subList(0, 5);
         }
         return collect;
     }
