@@ -5,17 +5,17 @@ plugins {
 }
 
 group = 'tw.edu.ntub.imd'
-version = '1.0.0'
+version = '1.0.2'
 sourceCompatibility = '11'
 targetCompatibility = '11'
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
-//processResources {
-//    exclude('application-local.yml')
-//    exclude('application-local-example.yml')
-//}
+processResources {
+    exclude('application-local.yml')
+    exclude('application-local-example.yml')
+}
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

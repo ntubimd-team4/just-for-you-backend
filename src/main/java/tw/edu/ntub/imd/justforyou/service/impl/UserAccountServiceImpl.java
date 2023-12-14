@@ -77,7 +77,7 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
                     if (email.length() == 8 && email.matches("\\d{8}|[nN]\\d{7}|\\d{4}[a-zA-Z]\\d{3}|[nN]\\d{3}[a-zA-Z]\\d{3}")) {
                         userAccount.setRole(Role.STUDENT);
                     } else {
-                        userAccount.setRole(Role.TEACHER);
+                        userAccount.setRole(Role.CASE_MANAGEMENT);
                     }
                     userAccountDAO.save(userAccount);
                 } else {

@@ -3,6 +3,7 @@ package tw.edu.ntub.imd.justforyou.service;
 import tw.edu.ntub.imd.justforyou.bean.RecommendRecordBean;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 public interface RecommendRecordService extends BaseViewService<RecommendRecordBean, Integer> {
@@ -13,4 +14,6 @@ public interface RecommendRecordService extends BaseViewService<RecommendRecordB
     List<Integer> searchUserEmotionTag(String loginUserAccount);
 
     List<RecommendRecordBean> searchByEstablishTime(String userId, String song);
+
+    List<RecommendRecordBean> searchCollectionIsTrue(String userId);
 }

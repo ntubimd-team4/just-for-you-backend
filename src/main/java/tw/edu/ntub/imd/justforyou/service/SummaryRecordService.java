@@ -5,7 +5,7 @@ import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import java.util.List;
 
 public interface SummaryRecordService extends BaseService<SummaryRecordBean, Integer> {
-    Integer saveSummaryRecord(SummaryRecordBean summaryRecordBean);
+    String saveSummaryRecord(SummaryRecordBean summaryRecordBean);
 
     List<String> saveEmotion(Integer sid, String prompt);
 
@@ -15,7 +15,7 @@ public interface SummaryRecordService extends BaseService<SummaryRecordBean, Int
 
     List<String> searchByTeacher(String id);
 
-    List<SummaryRecordBean> searchByTeacherIsNull();
+    List<SummaryRecordBean> searchByTeacherIsNull(Integer level);
 
-    List<SummaryRecordBean> searchByTeacherIsNotNull();
+    List<SummaryRecordBean> searchByTeacherIsNotNull(Integer level);
 }
