@@ -6,14 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tw.edu.ntub.birc.common.util.JavaBeanUtils;
 import tw.edu.ntub.imd.justforyou.bean.EmotionBean;
-import tw.edu.ntub.imd.justforyou.databaseconfig.dao.EmotionDAO;
-import tw.edu.ntub.imd.justforyou.databaseconfig.dao.MusicDAO;
-import tw.edu.ntub.imd.justforyou.databaseconfig.dao.MusicEmotionDAO;
-import tw.edu.ntub.imd.justforyou.databaseconfig.dao.MusicRecommendDAO;
+import tw.edu.ntub.imd.justforyou.databaseconfig.dao.*;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Emotion;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicEmotion;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicRecommend;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.view.RecommendRecord;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.EmotionService;
@@ -33,18 +31,21 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
     private final MusicDAO musicDAO;
     private final MusicEmotionDAO musicEmotionDAO;
     private final MusicRecommendDAO musicRecommendDAO;
+    private final RecommendRecordDAO recommendRecordDAO;
 
     public EmotionServiceImpl(EmotionDAO emotionDAO,
                               EmotionTransformer emotionTransformer,
                               MusicDAO musicDAO,
                               MusicEmotionDAO musicEmotionDAO,
-                              MusicRecommendDAO musicRecommendDAO) {
+                              MusicRecommendDAO musicRecommendDAO,
+                              RecommendRecordDAO recommendRecordDAO) {
         super(emotionDAO, emotionTransformer);
         this.emotionDAO = emotionDAO;
         this.emotionTransformer = emotionTransformer;
         this.musicDAO = musicDAO;
         this.musicEmotionDAO = musicEmotionDAO;
         this.musicRecommendDAO = musicRecommendDAO;
+        this.recommendRecordDAO = recommendRecordDAO;
     }
 
     @Override
@@ -113,21 +114,21 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
     }
 
     @Override
-    public List<Music> recommendMusic(Integer sid, List<MusicEmotion> musicEmotionList) {
-        List<Music> recommendMusicList = new ArrayList<>();
+    public List<RecommendRecord> recommendMusic(Integer sid, List<MusicEmotion> musicEmotionList) {
+        List<RecommendRecord> recommendMusicList = new ArrayList<>();
         for (MusicEmotion musicEmotion : musicEmotionList) {
             MusicRecommend musicRecommend = new MusicRecommend();
             musicRecommend.setSid(sid);
             musicRecommend.setMusicEmoId(musicEmotion.getId());
             musicRecommendDAO.save(musicRecommend);
 
-            Music music = new Music();
-            Optional<Music> musicOptional = musicDAO.findByMid(musicEmotion.getMid());
-            if (musicOptional.isPresent()) {
-                Music musicData = musicOptional.get();
-                JavaBeanUtils.copy(musicData, music);
+            RecommendRecord recommendRecord = new RecommendRecord();
+            Optional<RecommendRecord> recommendRecordOptional = recommendRecordDAO.findByMid(musicEmotion.getMid());
+            if (recommendRecordOptional.isPresent()) {
+                RecommendRecord musicData = recommendRecordOptional.get();
+                JavaBeanUtils.copy(musicData, recommendRecord);
             }
-            recommendMusicList.add(music);
+            recommendMusicList.add(recommendRecord);
         }
         return recommendMusicList;
     }

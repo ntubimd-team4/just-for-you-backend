@@ -41,6 +41,13 @@ public class RecommendRecord {
     @Column(name = "establish_time", nullable = false)
     private LocalDateTime establishTime;
     /**
+     * 音樂表流水號
+     *
+     * @since 1.0.0
+     */
+    @Column(name = "m_id", nullable = false)
+    private Integer mid;
+    /**
      * 歌曲
      *
      * @since 1.0.0

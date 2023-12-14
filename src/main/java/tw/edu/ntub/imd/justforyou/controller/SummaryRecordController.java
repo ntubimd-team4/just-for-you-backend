@@ -11,10 +11,12 @@ import tw.edu.ntub.imd.justforyou.bean.SummaryRecordBean;
 import tw.edu.ntub.imd.justforyou.bean.UserAccountBean;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicEmotion;
+import tw.edu.ntub.imd.justforyou.databaseconfig.entity.view.RecommendRecord;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.EmotionCode;
 import tw.edu.ntub.imd.justforyou.databaseconfig.enumerate.Level;
 import tw.edu.ntub.imd.justforyou.exception.NotFoundException;
 import tw.edu.ntub.imd.justforyou.service.*;
+import tw.edu.ntub.imd.justforyou.util.data.ObjectDataUtils;
 import tw.edu.ntub.imd.justforyou.util.data.SymbolUtils;
 import tw.edu.ntub.imd.justforyou.util.encryption.EncryptionUtils;
 import tw.edu.ntub.imd.justforyou.util.http.ResponseEntityBuilder;
@@ -47,7 +49,7 @@ public class SummaryRecordController {
 
         String value = SymbolUtils.remoteSymbol(emotionList);
         List<MusicEmotion> musicEmotionList = emotionService.searchMusic(sid);
-        List<Music> musicList = emotionService.recommendMusic(sid, musicEmotionList);
+        List<RecommendRecord> recommendRecordList = emotionService.recommendMusic(sid, musicEmotionList);
         String text = emotionService.generateText(musicEmotionList);
 
         ObjectData objectData = new ObjectData();
@@ -56,23 +58,12 @@ public class SummaryRecordController {
         objectData.add("text", text);
         objectData.add("value", value);
         objectData.add("color", EmotionCode.transformerToColor(value.split(",")[0]));
-        addMusicListToObjectData(objectData, musicList);
+        ObjectDataUtils.addMusicListToObjectData(objectData, recommendRecordList);
 
         return ResponseEntityBuilder.success()
                 .message("摘要成功")
                 .data(objectData)
                 .build();
-    }
-
-    private void addMusicListToObjectData(ObjectData objectData, List<Music> list) {
-        CollectionObjectData data = objectData.createCollectionData();
-        data.add("musicList", list,
-                (contentData, content) -> {
-                    contentData.add("mid", content.getMid());
-                    contentData.add("song", content.getSong());
-                    contentData.add("link", content.getLink());
-                    contentData.add("thumbnails", content.getThumbnails());
-                });
     }
 
     @Operation(summary = "時間軸、摘要紀錄查詢", description = "wireframe pdf第9頁")
