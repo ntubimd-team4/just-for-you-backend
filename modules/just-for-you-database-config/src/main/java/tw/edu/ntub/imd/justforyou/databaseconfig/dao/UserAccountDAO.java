@@ -19,5 +19,5 @@ public interface UserAccountDAO extends BaseDAO<UserAccount, String>, JpaSpecifi
     @Query("SELECT u.userId FROM UserAccount u WHERE u.available = true AND u.role = 0 OR u.available = true AND u.role = 1")
     String[] findByAllTeacher();
 
-    Optional<UserAccount> findByIdAndAvailableIsTrue(String email);
+    Optional<UserAccount> findByUserIdAndAvailableIsTrue(String email);
 }

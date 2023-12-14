@@ -63,7 +63,7 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
                 if (!email.contains("@ntub.edu.tw")) {
                     throw new NotFoundException("請使用北商Mail登入");
                 }
-                Optional<UserAccount> optional = userAccountDAO.findByIdAndAvailableIsTrue(email);
+                Optional<UserAccount> optional = userAccountDAO.findByUserIdAndAvailableIsTrue(email);
 
                 UserAccount userAccount;
                 if (optional.isEmpty()) {
