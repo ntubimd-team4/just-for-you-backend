@@ -27,6 +27,13 @@ public class RecommendRecordServiceImpl extends BaseViewServiceImpl<RecommendRec
     }
 
     @Override
+    public List<RecommendRecordBean> searchCollectionIsTrue(String userId) {
+        return CollectionUtils.map(
+                recommendRecordDAO.findByUserIdAndCollectionIsTrue(userId),
+                recommendRecordTransformer::transferToBean);
+    }
+
+    @Override
     public List<RecommendRecordBean> searchByEstablishTime(String userId, String song) {
         return CollectionUtils.map(
                 recommendRecordDAO.findByUserIdAndSongContaining(userId, song),

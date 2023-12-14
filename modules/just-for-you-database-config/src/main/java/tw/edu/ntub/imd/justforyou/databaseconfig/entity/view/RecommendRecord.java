@@ -22,7 +22,7 @@ public class RecommendRecord {
      * UUID流水號
      */
     @Id
-    @Column(name = "id",nullable = false,unique = true)
+    @Column(name = "id", nullable = false, unique = true)
     private String id;
     /**
      * 摘要紀錄流水號

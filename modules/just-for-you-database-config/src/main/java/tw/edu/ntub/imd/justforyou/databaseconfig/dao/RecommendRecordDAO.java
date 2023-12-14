@@ -18,4 +18,6 @@ public interface RecommendRecordDAO extends BaseViewDAO<RecommendRecord, Integer
     List<Integer> findEmotionTagByUserId(@Param("userId") String userId);
 
     List<RecommendRecord> findByUserIdAndSongContaining(String userId, String song);
+
+    List<RecommendRecord> findByUserIdAndCollectionIsTrue(String userId);
 }
