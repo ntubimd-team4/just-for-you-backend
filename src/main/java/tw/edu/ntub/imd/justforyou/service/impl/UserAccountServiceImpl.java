@@ -60,6 +60,9 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
                 String googleId = payload.getSubject();
 
                 String email = (String) payload.get("email");
+                if (!email.contains("@ntub.edu.tw")) {
+                    throw new NotFoundException("請使用北商Mail登入");
+                }
                 Optional<UserAccount> optional = userAccountDAO.findById(email);
 
                 UserAccount userAccount;
