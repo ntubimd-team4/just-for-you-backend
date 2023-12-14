@@ -10,7 +10,6 @@ public class RecommendRecordBean {
     /**
      * @see tw.edu.ntub.imd.justforyou.databaseconfig.entity.SummaryRecord#sid
      */
-    private Integer sid;
     private String userId;
     private LocalDateTime establishTime;
     /**

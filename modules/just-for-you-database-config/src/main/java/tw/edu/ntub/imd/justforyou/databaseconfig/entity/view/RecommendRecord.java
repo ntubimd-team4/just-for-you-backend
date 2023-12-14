@@ -25,13 +25,6 @@ public class RecommendRecord {
     @Column(name = "id", nullable = false, unique = true)
     private String id;
     /**
-     * 摘要紀錄流水號
-     *
-     * @since 1.0.0
-     */
-    @Column(name = "s_id", nullable = false, unique = true)
-    private Integer sid;
-    /**
      * 使用者Google帳號
      *
      * @since 1.0.0
