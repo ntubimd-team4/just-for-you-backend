@@ -19,11 +19,13 @@ import java.time.LocalDateTime;
 @Immutable
 public class RecommendRecord {
     /**
-     * UUID流水號
+     * 推薦紀錄流水號
+     *
+     * @since 1.0.0
      */
     @Id
-    @Column(name = "id", nullable = false, unique = true)
-    private String id;
+    @Column(name = "r_id", nullable = false, unique = true)
+    private Integer rid;
     /**
      * 使用者Google帳號
      *
@@ -38,13 +40,6 @@ public class RecommendRecord {
      */
     @Column(name = "establish_time", nullable = false)
     private LocalDateTime establishTime;
-    /**
-     * 推薦紀錄流水號
-     *
-     * @since 1.0.0
-     */
-    @Column(name = "r_id", nullable = false, unique = true)
-    private Integer rid;
     /**
      * 歌曲
      *

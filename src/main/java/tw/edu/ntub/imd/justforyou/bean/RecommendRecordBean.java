@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class RecommendRecordBean {
-    private String id;
+    private Integer rid;
     /**
      * @see tw.edu.ntub.imd.justforyou.databaseconfig.entity.SummaryRecord#sid
      */
@@ -15,7 +15,6 @@ public class RecommendRecordBean {
     /**
      * @see tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicRecommend#rid
      */
-    private Integer rid;
     private String song;
     private String link;
     private String thumbnails;
