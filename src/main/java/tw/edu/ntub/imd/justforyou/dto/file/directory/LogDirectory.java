@@ -11,7 +11,7 @@ import java.util.Optional;
 public class LogDirectory extends DirectoryImpl {
 
     @Autowired
-    public LogDirectory(@Value("${log.path}${file.separator}project-practise") String logPath) {
+    public LogDirectory(@Value("${log.path}${file.separator}just-for-you") String logPath) {
         super(Paths.get(logPath));
     }
 

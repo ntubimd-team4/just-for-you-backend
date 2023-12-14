@@ -4,7 +4,7 @@ Configuration:
   Properties:
     Property:
       - name: filename
-        value: project-practise
+        value: just-for-you
       - name: path
         value: ${env:log.path}${sys:file.separator}${filename}
   dest: err
