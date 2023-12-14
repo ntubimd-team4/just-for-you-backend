@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.UserAccount;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserAccountDAO extends BaseDAO<UserAccount, String>, JpaSpecificationExecutor<UserAccount> {
@@ -17,4 +18,6 @@ public interface UserAccountDAO extends BaseDAO<UserAccount, String>, JpaSpecifi
 
     @Query("SELECT u.userId FROM UserAccount u WHERE u.available = true AND u.role = 0 OR u.available = true AND u.role = 1")
     String[] findByAllTeacher();
+
+    Optional<UserAccount> findByIdAndAvailableIsTrue(String email);
 }
