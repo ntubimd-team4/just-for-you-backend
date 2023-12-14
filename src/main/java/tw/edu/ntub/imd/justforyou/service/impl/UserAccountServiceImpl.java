@@ -129,7 +129,7 @@ public class UserAccountServiceImpl extends BaseServiceImpl<UserAccountBean, Use
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new UsernameNotFoundException("登入失敗");
+        throw new UsernameNotFoundException("帳號已被停用或未使用北商Mail登入");
     }
 
     @Override

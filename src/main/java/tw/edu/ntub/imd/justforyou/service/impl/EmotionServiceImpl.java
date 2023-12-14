@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tw.edu.ntub.birc.common.util.JavaBeanUtils;
 import tw.edu.ntub.imd.justforyou.bean.EmotionBean;
+import tw.edu.ntub.imd.justforyou.config.util.SecurityUtils;
 import tw.edu.ntub.imd.justforyou.databaseconfig.dao.*;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Emotion;
-import tw.edu.ntub.imd.justforyou.databaseconfig.entity.Music;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicEmotion;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.MusicRecommend;
 import tw.edu.ntub.imd.justforyou.databaseconfig.entity.view.RecommendRecord;
@@ -115,6 +115,7 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
 
     @Override
     public List<RecommendRecord> recommendMusic(Integer sid, List<MusicEmotion> musicEmotionList) {
+        String id = SecurityUtils.getLoginUserAccount();
         List<RecommendRecord> recommendMusicList = new ArrayList<>();
         for (MusicEmotion musicEmotion : musicEmotionList) {
             MusicRecommend musicRecommend = new MusicRecommend();
@@ -123,7 +124,7 @@ public class EmotionServiceImpl extends BaseServiceImpl<EmotionBean, Emotion, In
             musicRecommendDAO.save(musicRecommend);
 
             RecommendRecord recommendRecord = new RecommendRecord();
-            Optional<RecommendRecord> recommendRecordOptional = recommendRecordDAO.findByMid(musicEmotion.getMid());
+            Optional<RecommendRecord> recommendRecordOptional = recommendRecordDAO.findByMid(musicEmotion.getMid(), id);
             if (recommendRecordOptional.isPresent()) {
                 RecommendRecord musicData = recommendRecordOptional.get();
                 JavaBeanUtils.copy(musicData, recommendRecord);
