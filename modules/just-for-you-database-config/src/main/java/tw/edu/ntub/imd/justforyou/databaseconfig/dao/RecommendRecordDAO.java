@@ -27,6 +27,6 @@ public interface RecommendRecordDAO extends BaseViewDAO<RecommendRecord, Integer
 
     List<RecommendRecord> findByUserIdAndCollectionIsTrue(String userId);
 
-    @Query("FROM RecommendRecord r WHERE r.mid = :mid GROUP BY r.song")
-    Optional<RecommendRecord> findByMid(@Param("mid")Integer mid);
+    @Query("FROM RecommendRecord r WHERE r.mid = :mid AND r.userId = :id GROUP BY r.song")
+    Optional<RecommendRecord> findByMid(@Param("mid") Integer mid, @Param("id") String id);
 }
